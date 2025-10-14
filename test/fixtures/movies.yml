@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  description: MyText
+  poster_image: MyString
+  release_date: 2025-09-29
+  duration: 1
+  rating: 1.5
+  deleted_at: 2025-09-29 17:45:58
+
+two:
+  title: MyString
+  description: MyText
+  poster_image: MyString
+  release_date: 2025-09-29
+  duration: 1
+  rating: 1.5
+  deleted_at: 2025-09-29 17:45:58

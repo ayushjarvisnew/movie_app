@@ -1,0 +1,22 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  username: postgres
+  password: mypassword123
+  host: localhost
+  port: 5432
+
+
+development:
+  <<: *default
+  database: movie_reservation_system_development
+
+test:
+  <<: *default
+  database: movie_reservation_system_test
+
+production:
+  <<: *default
+  database: movie_reservation_system_production
+  username: movie_reservation_system
+  password: <%= ENV["MOVIE_RESERVATION_SYSTEM_DATABASE_PASSWORD"] %>

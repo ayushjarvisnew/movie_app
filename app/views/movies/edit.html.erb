@@ -1,0 +1,36 @@
+<%= form_with(model: @movie, local: true) do |form| %>
+  <div>
+    <%= form.label :title %>
+    <%= form.text_field :title %>
+  </div>
+
+  <div>
+    <%= form.label :description %>
+    <%= form.text_area :description %>
+  </div>
+
+  <div>
+    <%= form.label :release_date %>
+    <%= form.date_field :release_date %>
+  </div>
+
+  <div>
+    <%= form.label :rating %>
+    <%= form.number_field :rating, step: 0.1 %>
+  </div>
+
+  <div>
+    <%= form.label :poster_image %>
+    <%= form.text_field :poster_image %>
+  </div>
+
+  <div>
+    <%= form.label :tags %>
+    <%= form.collection_select :tag_ids, Tag.all, :id, :name, { include_hidden: false, prompt: "Select tags" }, { multiple: true, size: 5 } %>
+  </div>
+
+  <div>
+    <%= form.submit "Update Movie" %>
+    <%= link_to "Cancel", movies_path %>
+  </div>
+<% end %>

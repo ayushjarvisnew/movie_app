@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Movie Management System</title>
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+
+  <!-- JS bundle as module -->
+  <%= javascript_include_tag 'application', type: 'module', 'data-turbo-track': 'reload' %>
+
+  <!-- CSS bundle -->
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+</head>
+<body style="background-color:azure">
+<section style="text-align: center">
+  <div id="root"></div>
+  <%= yield %>
+</section>
+</body>
+</html>

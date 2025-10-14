@@ -1,0 +1,119 @@
+class ReservationsController < ApplicationController
+  before_action :authorize_request
+  before_action :require_admin, only: [:index]
+  before_action :set_reservation, only: [:destroy, :restore]
+
+  # it give list of reservation which is done by normal user
+  # GET /reservations/my_reservations
+  def my_reservations
+    reservations = @current_user.reservations.includes(showtime: [:movie, :screen, { theatre: :screens }], seats: [])
+    render json: reservations.map { |r| format_reservation(r) }
+  end
+
+
+  def create
+    seat_ids = reservation_params[:seat_ids]&.map(&:to_i) || []
+    showtime = Showtime.find_by(id: reservation_params[:showtime_id])
+    return render json: { error: "Showtime not found" }, status: :not_found unless showtime
+    return render json: { error: "Select at least one seat" }, status: :unprocessable_entity if seat_ids.empty?
+
+    seats = Seat.where(id: seat_ids, screen_id: showtime.screen_id, available: true)
+    if seats.size != seat_ids.size
+      return render json: { error: "Some selected seats are not available" }, status: :unprocessable_entity
+    end
+
+    total_amount = seats.sum { |s| s.price.to_f }
+
+    ActiveRecord::Base.transaction do
+      seats.lock! # prevent race conditions
+
+      reservation = @current_user.reservations.create!(
+        showtime: showtime,
+        total_amount: total_amount,
+        payment_status: "pending"
+      )
+
+      reservation.seats << seats
+      seats.update_all(available: false)
+
+      render json: format_reservation(reservation), status: :created
+    end
+
+  rescue ActiveRecord::RecordInvalid => e
+    render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
+  rescue => e
+    render json: { error: e.message }, status: :unprocessable_entity
+  end
+
+  # give reservation list of admin (user)
+  # GET /reservations
+  def index
+    reservations = if @current_user.is_admin
+                     Reservation.includes(showtime: [:movie, :screen, { theatre: :screens }], seats: [], user: []).all
+                   else
+                     @current_user.reservations.includes(showtime: [:movie, :screen, { theatre: :screens }], seats: [])
+                   end
+
+    render json: reservations.map { |r| format_reservation(r, include_user: @current_user.is_admin) }
+  end
+
+
+  def destroy
+    if @reservation.showtime.start_time > Time.current
+      ActiveRecord::Base.transaction do
+        @reservation.seats.update_all(available: true)
+        @reservation.soft_delete
+      end
+      render json: { message: "Reservation canceled successfully" }
+    else
+      render json: { error: "Cannot cancel past reservations" }, status: :forbidden
+    end
+  end
+
+  def restore
+    if @reservation.deleted_at.present?
+      ActiveRecord::Base.transaction do
+        @reservation.seats.update_all(available: false)
+        @reservation.restore
+      end
+      render json: { message: "Reservation restored successfully" }
+    else
+      render json: { error: "Reservation is not deleted" }, status: :unprocessable_entity
+    end
+  end
+
+  private
+
+  def set_reservation
+    @reservation = if @current_user.is_admin Reservation.find_by(id: params[:id])
+                   else @current_user.reservations.find_by(id: params[:id])
+                   end
+    render json: { error: "Reservation not found" }, status: :not_found unless @reservation
+  end
+
+
+  def reservation_params
+    params.require(:reservation).permit(:showtime_id, seat_ids: [])
+  end
+
+  def format_reservation(reservation, include_user: false)
+    data = {
+      id: reservation.id,
+      movie_title: reservation.showtime&.movie&.title,
+      theatre_name: reservation.showtime&.screen&.theatre&.name,
+      showtime_time: reservation.showtime&.start_time.in_time_zone("Asia/Kolkata").strftime("%d %b %Y, %H:%M"),
+      seats: reservation.seats.map { |s| "#{s.row}#{s.seat_number}" },
+      total_amount: reservation.total_amount,
+      payment_status: reservation.payment_status,
+      cancelled: reservation.deleted_at.present?
+    }
+
+    if include_user
+      data[:user_name] = reservation.user&.name
+      data[:user_email] = reservation.user&.email
+    end
+
+    data
+  end
+end
+
