@@ -17,3 +17,5 @@ class Reservation < ApplicationRecord
     update(deleted_at: nil)
   end
 end
+
+

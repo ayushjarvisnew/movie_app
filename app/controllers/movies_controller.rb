@@ -3,48 +3,76 @@ class MoviesController < ApplicationController
   before_action :require_admin, only: [:create, :update, :destroy]
   before_action :set_movie, only: [:show, :update, :destroy, :showtimes]
 
-
+  # GET /api/movies
   def index
-    movies = Movie.active.map { |m| movie_json(m) rescue nil }.compact
+    movies = Movie.active.map do |movie|
+      movie.as_json(
+        only: [:id, :title, :description, :release_date, :duration, :rating]
+      ).merge(
+        poster_image: "/movies/#{movie.poster_image}",
+        tags: movie.tags.map { |t| { id: t.id, name: t.name } }
+      )
+    end
     render json: movies
   end
 
+  # GET /api/movies/:id
   def show
-    render json: movie_json(@movie)
+    render json: @movie.as_json(
+      only: [:id, :title, :description, :release_date, :duration, :rating]
+    ).merge(
+      poster_image: "/movies/#{@movie.poster_image}",
+      tags: @movie.tags.map { |t| { id: t.id, name: t.name } }
+    )
   end
 
+  # POST /api/movies
   def create
     @movie = Movie.new(movie_params.except(:tag_ids, :new_tags))
 
     if @movie.save
       ActiveRecord::Base.transaction do
-        attach_tags(@movie, params[:movie][:tag_ids])
-        attach_new_tags(@movie, params[:movie][:new_tags])
+        attach_tags(@movie, movie_params[:tag_ids])
+        attach_new_tags(@movie, movie_params[:new_tags])
       end
-      render json: movie_json(@movie), status: :created
+
+      render json: @movie.as_json(
+        only: [:id, :title, :description, :release_date, :duration, :rating]
+      ).merge(
+        poster_image: "/movies/#{@movie.poster_image}",
+        tags: @movie.tags.map { |t| { id: t.id, name: t.name } }
+      ), status: :created
     else
       render json: { errors: @movie.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
+  # PATCH /api/movies/:id
   def update
     if @movie.update(movie_params.except(:tag_ids, :new_tags))
       ActiveRecord::Base.transaction do
-        attach_tags(@movie, params[:movie][:tag_ids])
-        attach_new_tags(@movie, params[:movie][:new_tags])
+        attach_tags(@movie, movie_params[:tag_ids])
+        attach_new_tags(@movie, movie_params[:new_tags])
       end
-      render json: movie_json(@movie)
+
+      render json: @movie.as_json(
+        only: [:id, :title, :description, :release_date, :duration, :rating]
+      ).merge(
+        poster_image: "/movies/#{@movie.poster_image}",
+        tags: @movie.tags.map { |t| { id: t.id, name: t.name } }
+      )
     else
       render json: { errors: @movie.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
+  # DELETE /api/movies/:id
   def destroy
     @movie.soft_delete
-    render json: { message: "Movie deleted" }
+    head :no_content
   end
 
-  # Fetches active showtimes for this movie, including associated screens
+  # GET /api/movies/:id/showtimes
   def showtimes
     showtimes = @movie.showtimes.active.includes(:screen)
     render json: showtimes.map do |st|
@@ -69,31 +97,25 @@ class MoviesController < ApplicationController
   end
 
   def movie_params
-    params.require(:movie).permit(:title, :description, :poster_image, :release_date, :duration, :rating, tag_ids: [], new_tags: [])
-  end
-
-  def movie_json(movie)
-    {
-      id: movie.id,
-      title: movie.title,
-      description: movie.description,
-      poster_image: view_context.asset_path("movies/#{movie.poster_image}"),
-      release_date: movie.release_date,
-      duration: movie.duration,
-      rating: movie.rating,
-      tags: movie.tags.map { |t| { id: t.id, name: t.name } }
-    }
+    params.require(:movie)
+          .permit(:title, :description, :poster_image, :release_date, :duration, :rating, tag_ids: [], new_tags: [])
+          .tap do |whitelisted|
+      if whitelisted[:poster_image].present?
+        # Only keep the filename, remove any path like '/movies/...'
+        whitelisted[:poster_image] = File.basename(whitelisted[:poster_image])
+      end
+    end
   end
 
   def attach_tags(movie, tag_ids)
-    return unless tag_ids.present?
-    movie.tag_ids = tag_ids
+    movie.tag_ids = tag_ids if tag_ids.present?
   end
 
   def attach_new_tags(movie, new_tags)
     return unless new_tags.present?
-    new_tags.each do |name|
-      tag = Tag.find_or_create_by(name: name.strip)
+
+    new_tags.map(&:strip).uniq.each do |name|
+      tag = Tag.find_or_create_by(name: name)
       movie.tags << tag unless movie.tags.include?(tag)
     end
   end

@@ -8,21 +8,21 @@ gem "propshaft"
 gem "pg", "~> 1.1"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
+
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 gem "importmap-rails"
 # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
 gem "turbo-rails"
 # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
 gem "stimulus-rails"
+# Hotwire Stimulus
+gem "jsbundling-rails", "~> 1.3"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
-
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 gem "bcrypt", "~> 3.1.7"
-
 # for signup and login using JWT
 gem 'jwt'
-
 # Gemfile
 gem 'rack-cors', require: 'rack/cors'
 
@@ -68,6 +68,14 @@ group :test do
   gem "selenium-webdriver"
 end
 
-gem "react-rails", "~> 3.2"
+# gem "react-rails", "~> 3.2"
 
-gem "jsbundling-rails", "~> 1.3"
+# Gemfile
+gem "dotenv-rails", groups: [:development, :test]
+
+
+gem 'acts_as_paranoid', '~> 0.10.0'
+
+group :development, :test do
+  gem 'rspec-rails', '~> 7.0'
+end

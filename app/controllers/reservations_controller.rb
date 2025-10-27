@@ -3,7 +3,7 @@ class ReservationsController < ApplicationController
   before_action :require_admin, only: [:index]
   before_action :set_reservation, only: [:destroy, :restore]
 
-  # it give list of reservation which is done by normal user
+  #  list of reservation which is done by normal user
   # GET /reservations/my_reservations
   def my_reservations
     reservations = @current_user.reservations.includes(showtime: [:movie, :screen, { theatre: :screens }], seats: [])
@@ -44,8 +44,7 @@ class ReservationsController < ApplicationController
   rescue => e
     render json: { error: e.message }, status: :unprocessable_entity
   end
-
-  # give reservation list of admin (user)
+  # list of reservation which is done by admin user
   # GET /reservations
   def index
     reservations = if @current_user.is_admin

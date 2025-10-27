@@ -3,7 +3,7 @@ class Seat < ApplicationRecord
   has_and_belongs_to_many :reservations, join_table: :reservations_seats
 
   validates :row, :seat_number, :seat_type, presence: true
-  validates :available, inclusion: { in: [true, false] }
+  # validates :available, inclusion: { in: [true, false] }
 
   scope :active, -> { where(deleted_at: nil) }
 

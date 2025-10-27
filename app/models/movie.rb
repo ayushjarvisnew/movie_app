@@ -1,22 +1,17 @@
 class Movie < ApplicationRecord
-  has_many :movie_tags
+  acts_as_paranoid  # ✅ Handles soft delete automatically (uses deleted_at)
+
+  # Associations
+  has_many :movie_tags, dependent: :destroy
   has_many :tags, through: :movie_tags
-  has_many :screens, through: :showtimes
   has_many :showtimes, dependent: :destroy
+  has_many :screens, through: :showtimes
 
+  scope :active, -> { all }
+
+  # Validations
   validates :title, :description, presence: true
-  validates :rating, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 10 }, allow_nil: true
-
-
-  scope :active, -> { where(deleted_at: nil) }
-
-
-  def soft_delete
-    update(deleted_at: Time.current)
-  end
-
-  def restore
-    update(deleted_at: nil)
-  end
-
+  validates :rating,
+            numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 10 },
+            allow_nil: true
 end
