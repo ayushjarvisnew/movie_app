@@ -11,13 +11,13 @@ import Movies from "./Pages/Movies";
 import Admin from "./Pages/Admin";
 
 import UserDashboard from "./Pages/UserDashboard";
-// We'll put AdminRoute in Pages or MovieForm folder
+
 import Theatres from "./Pages/Theatres";
 import Screens from "./Pages/Screens";
 import Showtime from "./Pages/Showtime";
 import UserReservation from "./Pages/UserReservation";
-
-
+import PaymentSuccess from "./Pages/PaymentSuccess";
+import PaymentFailure from "./Pages/PaymentFailure";
 function App() {
     return (
         <Router>
@@ -29,11 +29,14 @@ function App() {
                 <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>}/>
                 <Route path="/dashboard" element={<UserRoute><UserDashboard /></UserRoute>} />
                 <Route path="/movies" element={<Movies />} />
-
+                {/*<Route path="/dashboard" element={<UserDashboard />} />*/}
                 <Route path="/theatres" element={<Theatres />} />
                 <Route path="/screens" element={<Screens />} />
                 <Route path="/showtimes" element={<Showtime />} />
                 <Route path="/reservation" element={<UserReservation />} />
+                <Route path="/payments/success" element={<PaymentSuccess />} />
+                <Route path="/payments/failure" element={<PaymentFailure />} />
+
             </Routes>
         </Router>
     );

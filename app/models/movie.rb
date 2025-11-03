@@ -1,7 +1,7 @@
 class Movie < ApplicationRecord
-  acts_as_paranoid  # ✅ Handles soft delete automatically (uses deleted_at)
+  acts_as_paranoid
 
-  # Associations
+
   has_many :movie_tags, dependent: :destroy
   has_many :tags, through: :movie_tags
   has_many :showtimes, dependent: :destroy
@@ -9,7 +9,6 @@ class Movie < ApplicationRecord
 
   scope :active, -> { all }
 
-  # Validations
   validates :title, :description, presence: true
   validates :rating,
             numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 10 },

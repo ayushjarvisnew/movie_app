@@ -3,8 +3,6 @@ class ReservationsController < ApplicationController
   before_action :require_admin, only: [:index]
   before_action :set_reservation, only: [:destroy, :restore]
 
-  #  list of reservation which is done by normal user
-  # GET /reservations/my_reservations
   def my_reservations
     reservations = @current_user.reservations.includes(showtime: [:movie, :screen, { theatre: :screens }], seats: [])
     render json: reservations.map { |r| format_reservation(r) }
@@ -44,8 +42,7 @@ class ReservationsController < ApplicationController
   rescue => e
     render json: { error: e.message }, status: :unprocessable_entity
   end
-  # list of reservation which is done by admin user
-  # GET /reservations
+
   def index
     reservations = if @current_user.is_admin
                      Reservation.includes(showtime: [:movie, :screen, { theatre: :screens }], seats: [], user: []).all
@@ -90,7 +87,6 @@ class ReservationsController < ApplicationController
     render json: { error: "Reservation not found" }, status: :not_found unless @reservation
   end
 
-
   def reservation_params
     params.require(:reservation).permit(:showtime_id, seat_ids: [])
   end
@@ -114,5 +110,30 @@ class ReservationsController < ApplicationController
 
     data
   end
+  def show_by_txn
+    reservation = Reservation.find_by(txnid: params[:txnid])
+
+    if reservation
+      showtime = reservation.showtime
+      movie = showtime.movie
+      theatre = showtime.screen.theatre
+      seats = reservation.seats.map { |s| "#{s.row}#{s.seat_number}" }
+
+      render json: {
+        booking: {
+          txnid: reservation.txnid,
+          movie: movie.title,
+          theatre: theatre.name,
+          showtime: showtime.start_time.in_time_zone("Asia/Kolkata").strftime("%d %b %Y, %H:%M"),
+          seats: seats,
+          amount: reservation.total_amount,
+          payment_status: reservation.payment_status
+        }
+      }
+    else
+      render json: { error: "Booking not found" }, status: :not_found
+    end
+  end
+
 end
 

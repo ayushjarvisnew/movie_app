@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-function Signup() {
+const Signup = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -13,18 +13,19 @@ function Signup() {
 
     const navigate = useNavigate();
 
+    // Validation logic
     const validate = () => {
         const errors = [];
         const passwordRegex =
             /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,20}$/;
 
         if (!name || name.trim().length < 3)
-            errors.push("Name must be at least 3 characters");
+            errors.push("Name must be at least 3 characters long");
         if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/))
             errors.push("Invalid email format");
         if (!password.match(passwordRegex))
             errors.push(
-                "Password must be 8–20 characters and include at least one uppercase letter, one lowercase letter, one number, and one special character"
+                "Password must be 8–20 chars, include uppercase, lowercase, number, and special character"
             );
         if (password !== passwordConfirmation)
             errors.push("Passwords do not match");
@@ -54,11 +55,11 @@ function Signup() {
 
             localStorage.setItem("token", res.data.token);
             localStorage.setItem("user", JSON.stringify(res.data.user));
+
             setMessage(`Signup successful! Welcome, ${res.data.user.name}`);
 
             setTimeout(() => {
-                if (res.data.user.is_admin) navigate("/admin");
-                else navigate("/dashboard");
+                navigate("/");
             }, 1500);
         } catch (err) {
             setMessage(
@@ -73,15 +74,17 @@ function Signup() {
         <div
             style={{
                 maxWidth: "400px",
-                margin: "40px auto",
+                margin: "50px auto",
                 textAlign: "center",
                 backgroundColor: "#fff",
-                padding: "20px",
+                padding: "30px",
                 borderRadius: "10px",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                boxShadow: "0 2px 10px rgba(0,0,0,0.15)",
+                fontFamily: "Arial, sans-serif",
             }}
         >
-            <h2 style={{ marginBottom: "20px" }}>Signup</h2>
+            <h2 style={{ marginBottom: "20px", color: "#333" }}>Signup</h2>
+
             {message && (
                 <div
                     style={{
@@ -94,67 +97,122 @@ function Signup() {
                         color: message.includes("successful")
                             ? "#155724"
                             : "#721c24",
+                        border: message.includes("successful")
+                            ? "1px solid #c3e6cb"
+                            : "1px solid #f5c6cb",
                     }}
                 >
                     {message}
                 </div>
             )}
+
             <form onSubmit={handleSubmit}>
                 <input
+                    type="text"
+                    placeholder="Name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Name"
                     required
-                    style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+                    style={{
+                        width: "100%",
+                        padding: "12px",
+                        marginBottom: "12px",
+                        borderRadius: "5px",
+                        border: "1px solid #ccc",
+                        boxSizing: "border-box",
+                        fontSize: "14px",
+                    }}
                 />
+
                 <input
+                    type="email"
+                    placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Email"
-                    type="email"
                     required
-                    style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+                    style={{
+                        width: "100%",
+                        padding: "12px",
+                        marginBottom: "12px",
+                        borderRadius: "5px",
+                        border: "1px solid #ccc",
+                        boxSizing: "border-box",
+                        fontSize: "14px",
+                    }}
                 />
+
                 <input
                     type="password"
+                    placeholder="Password (8–20 chars, mix case, number, special)"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Password (8–20 chars, mix case, number, special)"
                     required
-                    style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+                    style={{
+                        width: "100%",
+                        padding: "12px",
+                        marginBottom: "12px",
+                        borderRadius: "5px",
+                        border: "1px solid #ccc",
+                        boxSizing: "border-box",
+                        fontSize: "14px",
+                    }}
                 />
+
                 <input
                     type="password"
+                    placeholder="Confirm Password"
                     value={passwordConfirmation}
                     onChange={(e) => setPasswordConfirmation(e.target.value)}
-                    placeholder="Confirm Password"
                     required
-                    style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+                    style={{
+                        width: "100%",
+                        padding: "12px",
+                        marginBottom: "12px",
+                        borderRadius: "5px",
+                        border: "1px solid #ccc",
+                        boxSizing: "border-box",
+                        fontSize: "14px",
+                    }}
                 />
+
                 <input
+                    type="text"
+                    placeholder="Phone"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder="Phone"
-                    style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+                    style={{
+                        width: "100%",
+                        padding: "12px",
+                        marginBottom: "15px",
+                        borderRadius: "5px",
+                        border: "1px solid #ccc",
+                        boxSizing: "border-box",
+                        fontSize: "14px",
+                    }}
                 />
+
                 <button
                     type="submit"
                     style={{
                         width: "100%",
-                        padding: "10px",
-                        backgroundColor: "#007bff",
-                        color: "white",
-                        border: "none",
+                        padding: "12px",
                         borderRadius: "5px",
+                        backgroundColor: "#007bff",
+                        color: "#fff",
+                        border: "none",
                         cursor: "pointer",
+                        fontWeight: "bold",
+                        fontSize: "15px",
+                        transition: "background-color 0.2s ease",
                     }}
+                    onMouseOver={(e) => (e.target.style.backgroundColor = "#0056b3")}
+                    onMouseOut={(e) => (e.target.style.backgroundColor = "#007bff")}
                 >
                     Signup
                 </button>
             </form>
         </div>
     );
-}
+};
 
 export default Signup;
-

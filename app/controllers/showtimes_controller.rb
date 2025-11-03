@@ -3,7 +3,7 @@ class ShowtimesController < ApplicationController
   before_action :require_admin, only: [:create, :update, :destroy]
   before_action :set_showtime, only: [:show, :available_seats, :book_seats, :update, :destroy]
 
-  # GET /showtimes?movie_id=1&date=YYYY-MM-DD
+
   def index
     showtimes = Showtime.includes(:movie, :screen).active
     showtimes = showtimes.where(movie_id: params[:movie_id]) if params[:movie_id].present?
@@ -16,12 +16,12 @@ class ShowtimesController < ApplicationController
     render json: showtimes.map { |st| showtime_json(st) }
   end
 
-  # GET /showtimes/:id
+
   def show
     render json: showtime_json(@showtime)
   end
 
-  # GET /showtimes/:id/seats
+
   def available_seats
     seats = @showtime.screen.seats.order(:row, :seat_number)
     booked_seat_ids = @showtime.reservations.joins(:seats).pluck("seats.id")
@@ -37,8 +37,14 @@ class ShowtimesController < ApplicationController
       }
     end
   end
+  # def available_seats
+  #   showtime = Showtime.find(params[:id])
+  #   seats = showtime.screen.seats.where(available: true)
+  #
+  #   render json: seats.as_json(only: [:id, :row, :seat_number, :seat_type, :available, :price])
+  # end
 
-  # POST /showtimes/:id/book_seats
+
   def book_seats
     seat_ids = params[:seat_ids]&.map(&:to_i) || []
     if seat_ids.empty?
@@ -81,7 +87,7 @@ class ShowtimesController < ApplicationController
     render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
   end
 
-  # Admin-only endpoints
+
   def create
     showtime = Showtime.new(showtime_params)
     showtime.available_seats = showtime.screen.total_seats if showtime.screen.present?
@@ -117,17 +123,13 @@ class ShowtimesController < ApplicationController
   end
 
   def showtime_json(showtime)
-    {
-      id: showtime.id,
-      movie_id: showtime.movie_id,
-      movie_title: showtime.movie.title,
-      screen_id: showtime.screen_id,
-      screen_name: showtime.screen.name,
-      theatre_name: showtime.screen.theatre.name,
-      start_time: showtime.start_time,
-      end_time: showtime.end_time,
-      language: showtime.language,
-      available_seats: showtime.available_seats
-    }
+    showtime.as_json(
+      only: [:id, :start_time, :end_time, :language, :available_seats],
+      include: {
+        movie: { only: [:id, :title] },
+        screen: { only: [:id, :name], include: { theatre: { only: [:name] } } }
+      }
+    )
   end
+
 end

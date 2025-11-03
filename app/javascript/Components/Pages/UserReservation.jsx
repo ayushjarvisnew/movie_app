@@ -19,7 +19,6 @@ const UserReservation = ({ movieId }) => {
     const [showModal, setShowModal] = useState(false);
     const token = localStorage.getItem("token");
 
-    // Fetch showtimes for selected date
     const fetchShowtimes = async () => {
         if (!date) return;
         try {
@@ -39,7 +38,6 @@ const UserReservation = ({ movieId }) => {
         if (date) fetchShowtimes();
     }, [date]);
 
-    // ✅ Group showtimes by theatre
     const showtimesByTheatre = showtimes.reduce((acc, st) => {
         const theatreName = st.theatre_name || "Unknown Theatre";
         if (!acc[theatreName]) acc[theatreName] = [];
@@ -47,7 +45,6 @@ const UserReservation = ({ movieId }) => {
         return acc;
     }, {});
 
-    // ✅ When clicking a showtime → open modal
     const handleShowtimeClick = (st) => {
         if (st.available_seats === 0) return;
         setSelectedShowtime(st);
@@ -60,7 +57,7 @@ const UserReservation = ({ movieId }) => {
                 🎬 Book Your Movie
             </h2>
 
-            {/* Date Picker */}
+
             <div style={{ marginBottom: "20px" }}>
                 <label style={{ fontWeight: "bold" }}>Select Date:</label>
                 <input
@@ -76,7 +73,6 @@ const UserReservation = ({ movieId }) => {
                 />
             </div>
 
-            {/* Showtimes */}
             {Object.keys(showtimesByTheatre).length === 0 && date && (
                 <p style={{ textAlign: "center", color: "red" }}>
                     No showtimes available for this date.
@@ -113,7 +109,7 @@ const UserReservation = ({ movieId }) => {
                 </div>
             ))}
 
-            {/* ✅ Seat Selection Modal */}
+
             {showModal && selectedShowtime && (
                 <SeatSelection
                     showtime={selectedShowtime}

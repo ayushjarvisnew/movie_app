@@ -1,93 +1,90 @@
-# User.create!(
-#   name: "Admin",
-#   email: "admin@gmail.com",
-#   password: "123456789",
-#   password_confirmation: "123456789",
-#   phone: "9876543210",
-#   is_admin: true
-# )
-# User.create!(
-#   name: "User",
-#   email: "user@gmail.com",
-#   password: "123456789",
-#   password_confirmation: "123456789",
-#   phone: "1234567890",
-#   is_admin: false
-# )
-# Theatre.create!(
-#   name: "PVR Cinemas",
-#   address: "123 Main St",
-#   city: "Mumbai",
-#   state: "MH",
-#   country: "India",
-#   rating: 4.5
-# )
-# Theatre.create!(
-#   name: "INOX",
-#   address: "456 Park Lane",
-#   city: "Delhi",
-#   state: "DL",
-#   country: "India",
-#   rating: 4.2
-# )
+puts "🌱 Seeding data..."
 
-# Tag.create!([
-#               { name: "Action" },
-#               { name: "Adventure" },
-#               { name: "Comedy" },
-#               { name: "Drama" },
-#               { name: "Horror" },
-#               { name: "Sci-Fi" },
-#               { name: "Romance" },
-#               { name: "Thriller" },
-#               { name: "Animation" },
-#               { name: "Fantasy" }
-#             ])
+# === USERS ===
+admin = User.find_or_create_by!(email: "admin@gmail.com") do |user|
+  user.name = "Admin"
+  user.password = "123456789"
+  user.password_confirmation = "123456789"
+  user.phone = "9876543210"
+  user.is_admin = true
+end
 
-# Movie.create!(
-#   title: "Inception",
-#   description: "A skilled thief, the absolute best in the dangerous art of extraction, steals valuable secrets from deep within the subconscious during dream states.",
-#   poster_image: "m1.png",
-#   release_date: "2010-07-16",
-#   duration: 148, # in minutes
-#   rating: 4.5
-# )
-# Movie.create!(
-#   title: "Avengers: Endgame",
-#   description: "After the devastating events of Avengers: Infinity War, the universe is in ruins. The remaining Avengers assemble once more to reverse Thanos' actions and restore balance.",
-#   poster_image: "m1.png", # relative to app/assets/images/
-#   release_date: "2019-04-26",
-#   duration: 181, # in minutes
-#   rating: 4.3
-# )
+user = User.find_or_create_by!(email: "user@gmail.com") do |user|
+  user.name = "User"
+  user.password = "123456789"
+  user.password_confirmation = "123456789"
+  user.phone = "1234567890"
+  user.is_admin = false
+end
 
-# Screen.create!(
-#   name: "Screen 1",
-#   total_seats: 200,
-#   screen_type: "2D",
-#   theatre_id: 1
-# )
-# Screen.create!(
-#   name: "Screen 2",
-#   total_seats: 150,
-#   screen_type: "3D",
-#   theatre_id: 2
-# )
+# === THEATRES ===
+pvr = Theatre.find_or_create_by!(name: "PVR Cinemas") do |t|
+  t.address = "123 Main St"
+  t.city = "Mumbai"
+  t.state = "MH"
+  t.country = "India"
+  t.rating = 4.5
+end
 
-# Showtime.create!(
-#   movie_id: 1,
-#   screen_id: 3,
-#   start_time: "2025-10-12 10:00",
-#   end_time: "2025-10-12 13:00",
-#   language: "English",
-#   available_seats: 200
-# )
-#
-# Showtime.create!(
-#   movie_id: 2,
-#   screen_id: 4,
-#   start_time: "2025-10-12 14:00",
-#   end_time: "2025-10-12 17:00",
-#   language: "English",
-#   available_seats: 150
-# )
+inox = Theatre.find_or_create_by!(name: "INOX") do |t|
+  t.address = "456 Park Lane"
+  t.city = "Delhi"
+  t.state = "DL"
+  t.country = "India"
+  t.rating = 4.2
+end
+
+# === TAGS ===
+tags = [
+  "Action", "Adventure", "Comedy", "Drama",
+  "Horror", "Sci-Fi", "Romance", "Thriller",
+  "Animation", "Fantasy"
+]
+tags.each do |tag_name|
+  Tag.find_or_create_by!(name: tag_name)
+end
+
+# === MOVIES ===
+inception = Movie.find_or_create_by!(title: "Inception") do |m|
+  m.description = "A skilled thief steals secrets from deep within the subconscious during dream states."
+  m.poster_image = "m1.png"
+  m.release_date = "2010-07-16"
+  m.duration = 148
+  m.rating = 4.5
+end
+
+endgame = Movie.find_or_create_by!(title: "Avengers: Endgame") do |m|
+  m.description = "After the events of Infinity War, the remaining Avengers assemble to reverse Thanos' actions."
+  m.poster_image = "m1.png"
+  m.release_date = "2019-04-26"
+  m.duration = 181
+  m.rating = 4.3
+end
+
+# === SCREENS ===
+screen1 = Screen.find_or_create_by!(name: "Screen 1") do |s|
+  s.total_seats = 200
+  s.screen_type = "2D"
+  s.theatre = pvr
+end
+
+screen2 = Screen.find_or_create_by!(name: "Screen 2") do |s|
+  s.total_seats = 150
+  s.screen_type = "3D"
+  s.theatre = inox
+end
+
+# === SHOWTIMES ===
+Showtime.find_or_create_by!(movie: inception, screen: screen1, start_time: "2025-10-12 10:00") do |st|
+  st.end_time = "2025-10-12 13:00"
+  st.language = "English"
+  st.available_seats = 200
+end
+
+Showtime.find_or_create_by!(movie: endgame, screen: screen2, start_time: "2025-10-12 14:00") do |st|
+  st.end_time = "2025-10-12 17:00"
+  st.language = "English"
+  st.available_seats = 150
+end
+
+puts "✅ Seeding complete!"

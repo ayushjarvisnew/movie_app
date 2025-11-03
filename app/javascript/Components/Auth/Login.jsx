@@ -14,13 +14,16 @@ const Login = () => {
         try {
             const res = await axios.post("http://localhost:3000/login", { email, password });
             const { token, user } = res.data;
+
             localStorage.setItem("token", token);
             localStorage.setItem("isAdmin", user.is_admin);
             localStorage.setItem("user", JSON.stringify(user));
+            localStorage.setItem("userName", user.name);
+
             setMessage(`Welcome back, ${user.name}!`);
+
             setTimeout(() => {
-                if (user.is_admin) navigate("/admin");
-                else navigate("/dashboard");
+               navigate("/");
             }, 1000);
         } catch (err) {
             setMessage("Invalid email or password");
@@ -37,9 +40,11 @@ const Login = () => {
                 padding: "30px",
                 borderRadius: "10px",
                 boxShadow: "0 2px 10px rgba(0,0,0,0.15)",
+                fontFamily: "Arial, sans-serif",
             }}
         >
-            <h2 style={{ marginBottom: "20px" }}>Login</h2>
+            <h2 style={{ marginBottom: "20px", color: "#333" }}>Login</h2>
+
             {message && (
                 <div
                     style={{
@@ -48,11 +53,15 @@ const Login = () => {
                         borderRadius: "5px",
                         backgroundColor: message.includes("Welcome") ? "#d4edda" : "#f8d7da",
                         color: message.includes("Welcome") ? "#155724" : "#721c24",
+                        border: message.includes("Welcome")
+                            ? "1px solid #c3e6cb"
+                            : "1px solid #f5c6cb",
                     }}
                 >
                     {message}
                 </div>
             )}
+
             <form onSubmit={handleLogin}>
                 <input
                     type="email"
@@ -67,8 +76,10 @@ const Login = () => {
                         borderRadius: "5px",
                         border: "1px solid #ccc",
                         boxSizing: "border-box",
+                        fontSize: "14px",
                     }}
                 />
+
                 <div style={{ position: "relative", marginBottom: "20px" }}>
                     <input
                         type={showPassword ? "text" : "password"}
@@ -82,6 +93,7 @@ const Login = () => {
                             borderRadius: "5px",
                             border: "1px solid #ccc",
                             boxSizing: "border-box",
+                            fontSize: "14px",
                         }}
                     />
                     <span
@@ -95,11 +107,13 @@ const Login = () => {
                             color: "#007bff",
                             fontWeight: "bold",
                             userSelect: "none",
+                            fontSize: "13px",
                         }}
                     >
                         {showPassword ? "Hide" : "Show"}
                     </span>
                 </div>
+
                 <button
                     type="submit"
                     style={{
@@ -111,7 +125,11 @@ const Login = () => {
                         border: "none",
                         cursor: "pointer",
                         fontWeight: "bold",
+                        fontSize: "15px",
+                        transition: "background-color 0.2s ease",
                     }}
+                    onMouseOver={(e) => (e.target.style.backgroundColor = "#0056b3")}
+                    onMouseOut={(e) => (e.target.style.backgroundColor = "#007bff")}
                 >
                     Login
                 </button>
@@ -121,84 +139,3 @@ const Login = () => {
 };
 
 export default Login;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// // async function fetchData() {
-// //     console.log("Before await");
-// //     const response = await axios.get("http://localhost:3000/movies");
-// //     console.log("After await", response.data);
-// // }
-// // Before await
-// //     (Waits until axios finishes fetching)
-// // After await [movies array]
-//

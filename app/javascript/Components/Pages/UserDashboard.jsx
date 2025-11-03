@@ -4,36 +4,42 @@ import axios from "axios";
 const UserDashboard = () => {
     const [user, setUser] = useState(null);
     const [reservations, setReservations] = useState([]);
+    // const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [cancelling, setCancelling] = useState(null);
 
     const token = localStorage.getItem("token");
     const headers = { Authorization: `Bearer ${token}` };
 
-    // Fetch user info and reservations
-    const fetchData = () => {
+    const fetchData = async () => {
         if (!token) {
             setLoading(false);
             return;
         }
 
         setLoading(true);
+        try {
+            const [userRes, reservationRes, bookingRes] = await Promise.all([
+                axios.get("http://localhost:3000/current_user", { headers }),
+                axios.get("http://localhost:3000/reservations/my_reservations", { headers }),
+                axios.get("http://localhost:3000/bookings/my_bookings", { headers }),
+            ]);
 
-        // User info
-        axios
-            .get("http://localhost:3000/current_user", { headers })
-            .then((res) => setUser(res.data.user))
-            .catch((err) => console.error("User fetch error:", err));
+            setUser(userRes.data.user);
 
-        // Reservations
-        axios
-            .get("http://localhost:3000/reservations/my_reservations", { headers })
-            .then((res) => {
-                const data = Array.isArray(res.data) ? res.data : res.data.reservations || [];
-                setReservations(data);
-            })
-            .catch((err) => console.error("Reservations fetch error:", err))
-            .finally(() => setLoading(false));
+            const resData = Array.isArray(reservationRes.data)
+                ? reservationRes.data
+                : reservationRes.data.reservations || [];
+
+            setReservations(resData);
+            // setBookings(bookingRes.data || []);
+            setBookings(Array.isArray(bookingRes.data) ? bookingRes.data : bookingRes.data.bookings || []);
+
+        } catch (err) {
+            console.error("Dashboard fetch error:", err);
+        } finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
@@ -48,13 +54,10 @@ const UserDashboard = () => {
             await axios.delete(`http://localhost:3000/reservations/${reservationId}`, { headers });
             alert("Reservation cancelled successfully!");
 
-            // Refresh reservations
             fetchData();
 
-            // If SeatSelection is open, refresh seats
             const event = new CustomEvent("seat-refresh", { detail: { showtimeId } });
             window.dispatchEvent(event);
-
         } catch (err) {
             console.error("Cancel error:", err);
             alert(err.response?.data?.error || "Failed to cancel reservation");
@@ -62,7 +65,6 @@ const UserDashboard = () => {
             setCancelling(null);
         }
     };
-
 
     if (loading) return <p>Loading dashboard...</p>;
     if (!user) return <p>Please login to see your dashboard.</p>;
@@ -75,7 +77,7 @@ const UserDashboard = () => {
             {reservations.length === 0 ? (
                 <p>No reservations yet.</p>
             ) : (
-                <table border="1" cellPadding="10" style={{ margin: "auto" }}>
+                <table border="1" cellPadding="10" style={{ margin: "auto", marginBottom: "30px" }}>
                     <thead>
                     <tr>
                         <th>Movie</th>
@@ -105,20 +107,41 @@ const UserDashboard = () => {
                             </td>
                             <td>
                                 {Array.isArray(res.seats)
-                                    ? res.seats.map((seat) => (typeof seat === "string" ? seat : `${seat.row}${seat.seat_number}`)).join(", ")
+                                    ? res.seats
+                                        .map((seat) =>
+                                            typeof seat === "string" ? seat : `${seat.row}${seat.seat_number}`
+                                        )
+                                        .join(", ")
                                     : "N/A"}
                             </td>
                             <td>{res.total_amount ? `₹${res.total_amount}` : "N/A"}</td>
-                            <td style={{ color: res.cancelled ? "red" : res.payment_status === "paid" ? "green" : "orange", fontWeight: "bold" }}>
+                            <td
+                                style={{
+                                    color: res.cancelled
+                                        ? "red"
+                                        : res.payment_status === "paid"
+                                            ? "green"
+                                            : "orange",
+                                    fontWeight: "bold",
+                                }}
+                            >
                                 {res.cancelled ? "Cancelled" : res.payment_status || "N/A"}
                             </td>
                             <td>
-                                {res.cancelled || new Date(res.showtime_time) < new Date() ? "Past" : <button onClick={() => handleCancel(res.id)}>Cancel</button>}
+                                {res.cancelled || new Date(res.showtime_time) < new Date() ? (
+                                    "Past"
+                                ) : (
+                                    <button
+                                        onClick={() => handleCancel(res.id, res.showtime_id)}
+                                        disabled={cancelling === res.id}
+                                    >
+                                        {cancelling === res.id ? "Cancelling..." : "Cancel"}
+                                    </button>
+                                )}
                             </td>
                         </tr>
                     ))}
                     </tbody>
-
                 </table>
             )}
         </div>

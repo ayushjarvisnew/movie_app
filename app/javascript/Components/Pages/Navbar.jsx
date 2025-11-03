@@ -1,36 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../Css/Navbar.css";
 
 const Navbar = () => {
-    const [token, setToken] = useState(null);
-    const [isAdmin, setIsAdmin] = useState(false);
-    const [userName, setUserName] = useState("");
+    const token = localStorage.getItem("token");
+    const isAdmin = localStorage.getItem("isAdmin") === "true";
+    const userName = localStorage.getItem("userName");
     const [showDropdown, setShowDropdown] = useState(false);
-
     const navigate = useNavigate();
-
-    // Load user info from localStorage on mount
-    useEffect(() => {
-        const storedToken = localStorage.getItem("token");
-        const storedAdmin = localStorage.getItem("isAdmin") === "true";
-        const storedName = localStorage.getItem("userName");
-
-        setToken(storedToken);
-        setIsAdmin(storedAdmin);
-        setUserName(storedName);
-    }, []);
 
     const handleLogout = () => {
         localStorage.clear();
-        setToken(null);
-        setIsAdmin(false);
-        setUserName("");
-        navigate("/"); // redirect to home
+        navigate("/");
     };
 
     const handleDashboard = () => {
-        navigate("/dashboard"); // redirect to dashboard page
+        navigate("/dashboard");
     };
 
     return (
@@ -39,23 +24,20 @@ const Navbar = () => {
                 <Link to="/" className="nav-logo">Movie Reservation</Link>
                 <Link to="/" className="nav-link">Home</Link>
                 <Link to="/movies" className="nav-link">Movies</Link>
-                {isAdmin && token && (
-                    <Link to="/admin" className="nav-link">Admin</Link>
-                )}
+                {isAdmin && token && <Link to="/admin" className="nav-link">Admin</Link>}
             </div>
 
             <div className="navbar-right">
-                {!token ? (
+                {!token && (
                     <>
                         <Link to="/login" className="button-link">Login</Link>
                         <Link to="/signup" className="button-link signup">Signup</Link>
                     </>
-                ) : (
+                )}
+
+                {token && (
                     <div style={{ position: "relative" }}>
-                        <button
-                            className="button-link"
-                            onClick={() => setShowDropdown(!showDropdown)}
-                        >
+                        <button className="button-link" onClick={() => setShowDropdown(!showDropdown)}>
                             {userName || "User"} ▼
                         </button>
                         {showDropdown && (

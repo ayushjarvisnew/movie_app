@@ -8,7 +8,11 @@ class Reservation < ApplicationRecord
   validates :total_amount, numericality: { greater_than_or_equal_to: 0 }
 
   scope :active, -> { where(deleted_at: nil)}
+  scope :expired_pending, -> { where(payment_status: "pending").where("created_at < ?", 15.minutes.ago) }
 
+  def self.cleanup_expired
+    expired_pending.find_each(&:destroy)
+  end
   def soft_delete
     update(deleted_at: Time.current)
   end

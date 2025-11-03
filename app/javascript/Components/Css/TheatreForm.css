@@ -1,0 +1,81 @@
+.theatre-form-container {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 16px;
+    padding: 35px;
+    max-width: 700px;
+    margin: 40px auto;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    font-family: "Poppins", sans-serif;
+    transition: transform 0.3s ease;
+}
+
+.theatre-form-container:hover {
+    transform: translateY(-3px);
+}
+
+.theatre-form-title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 25px;
+    background: linear-gradient(90deg, #007bff, #8a2be2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.theatre-form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px 25px;
+}
+
+.theatre-form button {
+    grid-column: span 2;
+}
+
+.theatre-input {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    outline: none;
+    background: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.theatre-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+    background-color: #fff;
+}
+
+.theatre-btn {
+    background: linear-gradient(90deg, #007bff, #6610f2);
+    color: white;
+    font-weight: 700;
+    border: none;
+    border-radius: 10px;
+    padding: 14px;
+    cursor: pointer;
+    letter-spacing: 0.4px;
+    transition: all 0.25s ease;
+}
+
+.theatre-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 14px rgba(0, 123, 255, 0.3);
+}
+
+@media (max-width: 600px) {
+    .theatre-form {
+        grid-template-columns: 1fr;
+    }
+
+    .theatre-form button {
+        grid-column: span 1;
+    }
+}

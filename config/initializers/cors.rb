@@ -1,11 +1,24 @@
 # config/initializers/cors.rb
+# Rails.application.config.middleware.insert_before 0, Rack::Cors do
+#   allow do
+#     origins 'http://127.0.0.1:3000', 'http://localhost:3000'
+#     # origins 'http://localhost:3001'
+#     resource '*',
+#              headers: :any,
+#              methods: [:get, :post, :put, :patch, :delete, :options, :head],
+#              credentials: true
+#   end
+# end
+# config/initializers/cors.rb
+
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins 'http://127.0.0.1:3000', 'http://localhost:3000'
-    # origins 'http://localhost:3001'
+    origins 'http://localhost:3000', 'http://0.0.0.0:3000'
+
     resource '*',
              headers: :any,
              methods: [:get, :post, :put, :patch, :delete, :options, :head],
              credentials: true
   end
 end
+

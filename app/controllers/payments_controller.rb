@@ -1,15 +1,12 @@
 class PaymentsController < ApplicationController
-  # protect_from_forgery except: [:initiate, :success, :failure]
   skip_forgery_protection only: [:initiate, :success, :failure]
   before_action :authorize_request, only: [:initiate]
-
 
   require "digest"
 
   def initiate
     return render json: { error: "User not logged in" }, status: :unauthorized unless current_user
 
-    # Unique txnid: seconds + milliseconds + random number
     txnid = "TXN#{Time.now.to_i}#{(Time.now.usec / 1000).to_i}#{rand(1000..9999)}"
 
     key = ENV.fetch("PAYU_KEY", "IkRmcc")
@@ -22,34 +19,36 @@ class PaymentsController < ApplicationController
     phone = params[:phone]
     seat_ids = params[:seat_ids] || []
 
-    # Validations
     return render json: { error: "No seats selected" }, status: :unprocessable_entity if seat_ids.empty?
     return render json: { error: "Amount missing" }, status: :unprocessable_entity unless amount.present?
 
-    # Prevent duplicate pending booking for same showtime & seats
-    recent_booking = Booking.where(
+    recent_reservation = Reservation.where(
       user_id: current_user.id,
       showtime_id: params[:showtime_id],
-      status: "pending"
+      payment_status: "pending"
     ).where("created_at >= ?", 1.minute.ago).first
 
-    if recent_booking
+    if recent_reservation
       return render json: { error: "You already have a pending payment. Try again after a minute." }, status: :too_many_requests
     end
 
-    # Generate PayU hash
     hash_string = "#{key}|#{txnid}|#{amount}|#{productinfo}|#{firstname}|#{email}|||||||||||#{salt}"
     hash = Digest::SHA512.hexdigest(hash_string)
 
-    # Save booking as pending
-    booking = Booking.create!(
+    reservation = Reservation.create!(
       user_id: current_user.id,
       showtime_id: params[:showtime_id],
-      seat_ids: seat_ids,  # JSON array
       txnid: txnid,
-      status: "pending",
-      amount: amount
+      total_amount: amount,
+      payment_status: "pending",
+      seats_count: 0
     )
+
+    seat_ids.each do |id|
+      seat = Seat.find_by(id: id)
+      next unless seat&.available
+      reservation.seats << seat
+    end
 
     render json: {
       key: key,
@@ -60,32 +59,60 @@ class PaymentsController < ApplicationController
       email: email,
       phone: phone,
       productinfo: productinfo,
-      surl: "#{request.base_url}/payments/success",
-      furl: "#{request.base_url}/payments/failure",
+      surl: "http://localhost:3000/payment-success",
+      furl: "http://localhost:3000/payment-failure",
       action: "https://test.payu.in/_payment"
     }
   rescue => e
     Rails.logger.error("Payment initiation error: #{e.message}")
     render json: { error: "Payment initiation failed" }, status: :internal_server_error
   end
+
   def success
     txnid = params[:txnid]
     status = params[:status]
+    reservation = Reservation.find_by(txnid: txnid)
 
-    booking = Booking.find_by(txnid: txnid)
-    if booking && status == "success"
-      booking.update(status: "success")
-      booking.seat_ids.each { |id| Seat.find_by(id: id)&.update(available: false) }
-      render plain: "Payment successful!"
+    if reservation && status == "success"
+      reservation.update(payment_status: "success")
+      reservation.seats.each { |seat| seat.update(available: false) }
+
+      respond_to do |format|
+        format.html do
+          redirect_to "http://localhost:3000/payments/success?txnid=#{txnid}&status=success"
+        end
+
+        format.json do
+          render json: {
+            booking: {
+              txnid: reservation.txnid,
+              movie: reservation.showtime.movie.title,
+              theatre: reservation.showtime.screen.theatre.name,
+              showtime: reservation.showtime.start_time,
+              # seats: reservation.seats.map(&:seat_number),
+              seats: reservation.seats.map { |s| "#{s.row}#{s.seat_number}" },
+              amount: reservation.total_amount
+            }
+          }
+        end
+      end
     else
-      render plain: "Payment success callback received but booking not found."
+      respond_to do |format|
+        format.html do
+          redirect_to "http://localhost:3000/payments/failure?txnid=#{txnid}&status=failure"
+        end
+        format.json { render json: { error: "No booking found" }, status: :not_found }
+      end
     end
   end
 
+
   def failure
     txnid = params[:txnid]
-    booking = Booking.find_by(txnid: txnid)
-    booking.update(status: "failed") if booking
-    render plain: "Payment failed!"
+    reservation = Reservation.find_by(txnid: txnid)
+    reservation.update(payment_status: "failed") if reservation
+
+    redirect_to "http://localhost:3000/payments/failure?txnid=#{txnid}&status=failure"
   end
 end
+

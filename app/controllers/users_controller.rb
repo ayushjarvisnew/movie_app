@@ -8,7 +8,8 @@ class UsersController < ApplicationController
 
   def show
     user = User.find(params[:id])
-    render json: user
+    # render json: user
+    render json: user.as_json(only: [:id, :name, :email, :is_admin])
   end
 
   def update
@@ -22,6 +23,7 @@ class UsersController < ApplicationController
 
   def destroy
     user = User.find(params[:id])
+    return render json: { error: "Cannot delete yourself" }, status: :forbidden if user == @current_user
     user.destroy
     render json: { message: "User deleted" }
   end

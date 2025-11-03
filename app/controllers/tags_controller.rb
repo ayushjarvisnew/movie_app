@@ -2,6 +2,7 @@ class TagsController < ApplicationController
   before_action :authorize_request
   before_action :require_admin, only: [:create, :update, :destroy]
   before_action :set_tag, only: [:show, :update, :destroy]
+  skip_before_action :authorize_request, only: [:index, :show]
 
   def index
     render json: Tag.all
@@ -28,9 +29,17 @@ class TagsController < ApplicationController
     end
   end
 
+  # def destroy
+  #   @tag.destroy
+  #   head :no_content
+  # end
   def destroy
-    @tag.destroy
-    head :no_content
+    if @tag.movies.exists?
+      render json: { error: "Cannot delete tag in use by movies" }, status: :forbidden
+    else
+      @tag.destroy
+      head :no_content
+    end
   end
 
   private

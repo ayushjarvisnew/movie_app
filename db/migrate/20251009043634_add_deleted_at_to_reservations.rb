@@ -1,6 +1,8 @@
-class AddDeletedAtToReservations < ActiveRecord::Migration[8.0]
+class AddDeletedAtToReservations < ActiveRecord::Migration[7.1]
   def change
-    add_column :reservations, :deleted_at, :datetime
-    add_index :reservations, :deleted_at
+    unless column_exists?(:reservations, :deleted_at)
+      add_column :reservations, :deleted_at, :datetime
+    end
   end
 end
+

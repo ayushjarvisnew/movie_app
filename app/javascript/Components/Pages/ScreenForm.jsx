@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import "../Css/ScreenForm.css"; // ✅ Add this line
 
 const ScreenForm = ({ screen, onSuccess }) => {
     const [name, setName] = useState(screen?.name || "");
-    const [totalSeats, setTotalSeats] = useState(screen?.total_seats || "");
+    const [totalSeats, setTotalSeats] = useState(screen?.seats || "");
     const [screenType, setScreenType] = useState(screen?.screen_type || "2D");
     const [theatreId, setTheatreId] = useState(screen?.theatre?.id || "");
     const [theatres, setTheatres] = useState([]);
@@ -57,69 +58,72 @@ const ScreenForm = ({ screen, onSuccess }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit} style={{ marginBottom: "20px" }}>
-            <h3>{screen ? "Edit Screen" : "Add New Screen"}</h3>
-            <input
-                type="text"
-                placeholder="Screen Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                style={{ marginRight: "10px", padding: "6px", borderRadius: "5px", border: "1px solid #ccc" }}
-            />
-            <input
-                type="number"
-                placeholder="Total Seats (100-500)"
-                value={totalSeats}
-                onChange={(e) => setTotalSeats(e.target.value)}
-                required
-                min={100}
-                max={500}
-                style={{ marginRight: "10px", padding: "6px", borderRadius: "5px", border: "1px solid #ccc" }}
-            />
-            <select
-                value={screenType}
-                onChange={(e) => setScreenType(e.target.value)}
-                required
-                style={{ marginRight: "10px", padding: "6px", borderRadius: "5px", border: "1px solid #ccc" }}
-            >
-                <option value="2D">2D</option>
-                <option value="3D">3D</option>
-                <option value="IMAX">IMAX</option>
-                <option value="4DX">4DX</option>
-                <option value="Dolby Cinema">Dolby Cinema</option>
-            </select>
+        <div className="screen-form-container">
+            <h3 className="screen-form-title">
+                {screen ? "Edit Screen" : "Add New Screen"}
+            </h3>
 
-            <select
-                value={theatreId}
-                onChange={(e) => setTheatreId(e.target.value)}
-                required
-                style={{ marginRight: "10px", padding: "6px", borderRadius: "5px", border: "1px solid #ccc" }}
-            >
-                <option value="">Select Theatre</option>
-                {theatres.map((t) => (
-                    <option key={t.id} value={t.id}>
-                        {t.name}
-                    </option>
-                ))}
-            </select>
+            <form onSubmit={handleSubmit} className="screen-form">
+                <div className="form-group">
+                    <label>Screen Name</label>
+                    <input
+                        type="text"
+                        placeholder="Enter Screen Name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                    />
+                </div>
 
-            <button
-                type="submit"
-                disabled={loading}
-                style={{
-                    padding: "8px 12px",
-                    backgroundColor: "#007bff",
-                    color: "white",
-                    borderRadius: "5px",
-                    border: "none",
-                    cursor: "pointer",
-                    fontWeight: "bold",
-                }}
-            >
-                {loading ? "Saving..." : screen ? "Update" : "Add"}
-            </button>
-        </form>
+                <div className="form-group">
+                    <label>Total Seats</label>
+                    <input
+                        type="number"
+                        placeholder="Total Seats (100-500)"
+                        value={totalSeats}
+                        onChange={(e) => setTotalSeats(e.target.value)}
+                        required
+                        min={100}
+                        max={500}
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label>Screen Type</label>
+                    <select
+                        value={screenType}
+                        onChange={(e) => setScreenType(e.target.value)}
+                        required
+                    >
+                        <option value="2D">2D</option>
+                        <option value="3D">3D</option>
+                        <option value="IMAX">IMAX</option>
+                        <option value="4DX">4DX</option>
+                        <option value="Dolby Cinema">Dolby Cinema</option>
+                    </select>
+                </div>
+
+                <div className="form-group">
+                    <label>Select Theatre</label>
+                    <select
+                        value={theatreId}
+                        onChange={(e) => setTheatreId(e.target.value)}
+                        required
+                    >
+                        <option value="">Select Theatre</option>
+                        {theatres.map((t) => (
+                            <option key={t.id} value={t.id}>
+                                {t.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                <button type="submit" disabled={loading} className="submit-btn">
+                    {loading ? "Saving..." : screen ? "Update Screen" : "Add Screen"}
+                </button>
+            </form>
+        </div>
     );
 };
 

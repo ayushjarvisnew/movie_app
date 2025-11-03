@@ -8,20 +8,19 @@ class Screen < ApplicationRecord
   validates :name, presence: true
   validates :total_seats, numericality: { greater_than: 0 }
 
-  # Scopes
+
   scope :active, -> { where(deleted_at: nil) }
 
-  # Returns globally available seats (not per showtime)
+
   def available_seats
     seats.where(available: true)
   end
 
-  # Callbacks
   after_create :generate_seats
 
   private
 
-  # Auto-generate seat records after screen creation
+
   def generate_seats
     return if total_seats.zero?
 

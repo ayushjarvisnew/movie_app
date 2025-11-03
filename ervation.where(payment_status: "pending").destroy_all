@@ -1,0 +1,21 @@
+=> 
+[[32m#<Reservation:0x000073a6ebe29860[0m
+  id: [34m[1m51[0m,
+  user_id: [34m[1m2[0m,
+  showtime_id: [34m[1m8[0m,
+  total_amount: [35m[1m0.15e3[0m,
+  payment_status: [31m[1m"[0m[31mpending[0m[31m[1m"[0m,
+  created_at: [31m[1m"[0m[31m2025-10-30 12:46:02.766011000 +0000[0m[31m[1m"[0m,
+  updated_at: [31m[1m"[0m[31m2025-10-30 12:46:02.766011000 +0000[0m[31m[1m"[0m,
+  deleted_at: [36m[1mnil[0m,
+  txnid: [31m[1m"[0m[31mTXN17618283627476160[0m[31m[1m"[0m[32m>[0m,
+ [32m#<Reservation:0x000073a6f208fa18[0m
+  id: [34m[1m52[0m,
+  user_id: [34m[1m10[0m,
+  showtime_id: [34m[1m8[0m,
+  total_amount: [35m[1m0.15e3[0m,
+  payment_status: [31m[1m"[0m[31mpending[0m[31m[1m"[0m,
+  created_at: [31m[1m"[0m[31m2025-10-30 12:46:55.487879000 +0000[0m[31m[1m"[0m,
+  updated_at: [31m[1m"[0m[31m2025-10-30 12:46:55.487879000 +0000[0m[31m[1m"[0m,
+  deleted_at: [36m[1mnil[0m,
+  txnid: [31m[1m"[0m[31mTXN17618284154732632[0m[31m[1m"[0m[32m>[0m]

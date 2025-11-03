@@ -21,7 +21,6 @@ const Theatres = () => {
         fetchTheatres();
     }, []);
 
-    // Handle soft delete
     const handleDelete = id => {
         if (window.confirm("Are you sure you want to delete this theatre?")) {
             axios.delete(`http://localhost:3000/theatres/${id}`, {
@@ -32,7 +31,6 @@ const Theatres = () => {
         }
     };
 
-    // Trigger edit via custom event (TheatreForm can listen)
     const handleEdit = (theatre) => {
         window.dispatchEvent(new CustomEvent('editTheatre', { detail: theatre }));
     };
