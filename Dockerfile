@@ -19,13 +19,22 @@ RUN apt-get update -qq && \
 COPY Gemfile* ./
 
 # Install Ruby gems
-RUN bundle install
+RUN bundle install --without development test && gem install foreman
 
 # Copy the rest of the Rails app
 COPY . .
 
+# Set environment
+ENV RAILS_ENV=production
+ENV RACK_ENV=production
+ENV NODE_ENV=production
+ENV PORT=3000
+
+# Precompile assets
+RUN bundle exec rails assets:precompile
+
 # Expose Rails default port
 EXPOSE 3000
 
-# Start Rails server
-CMD ["bin/rails", "server", "-b", "0.0.0.0"]
+# Start Rails production server
+CMD ["bash", "-c", "bundle exec rails db:migrate && bundle exec rails server -b 0.0.0.0 -p 3000 -e production"]

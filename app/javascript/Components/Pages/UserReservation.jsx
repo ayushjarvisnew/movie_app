@@ -113,7 +113,7 @@ const UserReservation = ({ movieId }) => {
             {showModal && selectedShowtime && (
                 <SeatSelection
                     showtime={selectedShowtime}
-                    onClose={() => setShowModal(false)} // 👈 Close when X clicked
+                    onClose={() => setShowModal(false)}
                 />
             )}
         </div>

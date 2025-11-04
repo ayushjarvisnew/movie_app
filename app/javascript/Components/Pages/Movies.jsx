@@ -21,7 +21,7 @@ const Movies = () => {
             })
             .then((res) => {
                 if (Array.isArray(res.data)) {
-                    // filter only movies whose release_date <= today
+
                     const today = new Date();
                     const released = res.data.filter(
                         (m) => new Date(m.release_date) <= today
@@ -216,7 +216,7 @@ const Movies = () => {
                                             opacity: 0.8,
                                         }}
                                     >
-                                        🚫 Coming Soon
+                                         Comming Soon
                                     </button>
                                 </div>
                             ))}
