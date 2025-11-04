@@ -30,11 +30,8 @@ ENV RACK_ENV=production
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# Precompile assets
-RUN bundle exec rails assets:precompile
-
 # Expose Rails default port
 EXPOSE 3000
 
 # Start Rails production server
-CMD ["bash", "-c", "bundle exec rails db:migrate && bundle exec rails server -b 0.0.0.0 -p 3000 -e production"]
+CMD ["bash", "-c", "bundle exec rails db:migrate && bundle exec rails assets:precompile && bundle exec rails server -b 0.0.0.0 -p 3000 -e production"]
