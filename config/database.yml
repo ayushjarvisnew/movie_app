@@ -2,7 +2,7 @@ default: &default
   adapter: postgresql
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  host: <%= ENV.fetch("DB_HOST", "db") %>
+  host: <%= ENV.fetch("DB_HOST", "localhost") %>
   username: <%= ENV.fetch("DB_USER", "postgres") %>
   password: <%= ENV.fetch("DB_PASSWORD", "password") %>
 
@@ -17,23 +17,21 @@ test:
 production:
   <<: *default
   url: <%= ENV["DATABASE_URL"] %>
-  database: <%= ENV.fetch("DB_NAME", "movie_reservation_system_production") %>
   connects_to:
-    database: { writing: :production, reading: :production }
-    cache: :cache
+    database:
+      writing: production
+      reading: production
+    cache: cache
 
-# ✅ Added for Rails 8 SolidCache
 cache:
   <<: *default
   url: <%= ENV["DATABASE_URL"] %>
   database: solid_cache_production
 
-# ✅ For Action Cable (WebSockets)
 cable:
   <<: *default
   database: <%= ENV.fetch("DB_NAME", "movie_reservation_system_cable") %>
 
-# ✅ For SolidQueue (Background Jobs)
 queue:
   <<: *default
   url: <%= ENV["DATABASE_URL"] %>
