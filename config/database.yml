@@ -23,3 +23,9 @@ production:
 cable:
   <<: *default
   database: <%= ENV.fetch("DB_NAME", "movie_reservation_system_cable") %>
+
+# 👇 For SolidQueue (Rails 8 background jobs)
+queue:
+  <<: *default
+  database: <%= ENV.fetch("DB_NAME", "movie_reservation_system_queue") %>
+  url: <%= ENV["DATABASE_URL"] %>
