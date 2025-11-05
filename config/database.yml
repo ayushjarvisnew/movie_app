@@ -18,3 +18,8 @@ production:
   <<: *default
   database: <%= ENV.fetch("DB_NAME", "movie_reservation_system_production") %>
   url: <%= ENV["DATABASE_URL"] %>
+
+# 👇 Add this block (for Solid Cable in Rails 8)
+cable:
+  <<: *default
+  database: <%= ENV.fetch("DB_NAME", "movie_reservation_system_cable") %>
