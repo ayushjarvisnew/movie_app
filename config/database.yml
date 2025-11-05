@@ -16,16 +16,25 @@ test:
 
 production:
   <<: *default
-  database: <%= ENV.fetch("DB_NAME", "movie_reservation_system_production") %>
   url: <%= ENV["DATABASE_URL"] %>
+  database: <%= ENV.fetch("DB_NAME", "movie_reservation_system_production") %>
+  connects_to:
+    database: { writing: :production, reading: :production }
+    cache: :cache
 
-# 👇 Add this block (for Solid Cable in Rails 8)
+# ✅ Added for Rails 8 SolidCache
+cache:
+  <<: *default
+  url: <%= ENV["DATABASE_URL"] %>
+  database: solid_cache_production
+
+# ✅ For Action Cable (WebSockets)
 cable:
   <<: *default
   database: <%= ENV.fetch("DB_NAME", "movie_reservation_system_cable") %>
 
-# 👇 For SolidQueue (Rails 8 background jobs)
+# ✅ For SolidQueue (Background Jobs)
 queue:
   <<: *default
-  database: <%= ENV.fetch("DB_NAME", "movie_reservation_system_queue") %>
   url: <%= ENV["DATABASE_URL"] %>
+  database: <%= ENV.fetch("DB_NAME", "movie_reservation_system_queue") %>
