@@ -34,4 +34,4 @@ ENV PORT=3000
 EXPOSE 3000
 
 # Start Rails production server
-CMD ["bash", "-c", "bundle exec rails db:prepare && bundle exec rails assets:precompile && bundle exec rails server -b 0.0.0.0 -p 3000 -e production"]
+CMD ["bash", "-c", "bundle exec rails db:prepare && bundle exec rails db:seed && bundle exec rails assets:precompile && bundle exec rails server -b 0.0.0.0 -p 3000 -e production"]
