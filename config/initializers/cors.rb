@@ -11,7 +11,6 @@
 #
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    # origins 'https://movie-app-3cv5.onrender.com' # add production URL
     origins 'http://localhost:3000', 'https://movie-app-3cv5.onrender.com'
     resource '*',
              headers: :any,
