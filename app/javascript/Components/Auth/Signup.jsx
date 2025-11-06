@@ -179,7 +179,9 @@ const Signup = () => {
                     type="text"
                     placeholder="Phone"
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    onChange={(e) =>
+                        setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))
+                    }
                     style={{
                         width: "100%",
                         padding: "12px",
@@ -190,6 +192,7 @@ const Signup = () => {
                         fontSize: "14px",
                     }}
                 />
+
 
                 <button
                     type="submit"
