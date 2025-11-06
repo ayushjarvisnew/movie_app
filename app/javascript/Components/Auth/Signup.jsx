@@ -43,7 +43,7 @@ const Signup = () => {
         e.preventDefault();
         if (!validate()) return;
 
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
         try {
             const res = await axios.post("/signup", {
                 name,
@@ -52,11 +52,6 @@ const Signup = () => {
                 password_confirmation: passwordConfirmation,
                 phone,
                 is_admin: isAdmin,
-            }, {
-                headers: {
-                    'X-CSRF-Token': csrfToken, // send CSRF token
-                    'Content-Type': 'application/json'
-                }
             });
 
             localStorage.setItem("token", res.data.token);
