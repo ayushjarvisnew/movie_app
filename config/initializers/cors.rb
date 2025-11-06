@@ -1,24 +1,21 @@
-# config/initializers/cors.rb
 # Rails.application.config.middleware.insert_before 0, Rack::Cors do
 #   allow do
-#     origins 'http://127.0.0.1:3000', 'http://localhost:3000'
-#     # origins 'http://localhost:3001'
+#     origins 'http://localhost:3000', 'http://0.0.0.0:3000'
+#
 #     resource '*',
 #              headers: :any,
 #              methods: [:get, :post, :put, :patch, :delete, :options, :head],
 #              credentials: true
 #   end
 # end
-# config/initializers/cors.rb
-
+#
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins 'http://localhost:3000', 'http://0.0.0.0:3000'
-
+    # origins 'https://movie-app-3cv5.onrender.com' # add production URL
+    origins 'http://localhost:3000', 'https://movie-app-3cv5.onrender.com'
     resource '*',
              headers: :any,
              methods: [:get, :post, :put, :patch, :delete, :options, :head],
              credentials: true
   end
 end
-
