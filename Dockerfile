@@ -28,10 +28,10 @@ COPY . .
 ENV RAILS_ENV=production
 ENV RACK_ENV=production
 ENV NODE_ENV=production
-ENV PORT=3000
+ENV PORT=80
 
-# Expose Rails default port
-EXPOSE 3000
+# Expose port 80 (Render expects this)
+EXPOSE 80
 
 # Start Rails production server
-CMD ["bash", "-c", "bundle exec rails db:prepare && bundle exec rails db:seed && bundle exec rails assets:precompile && bundle exec rails server -b 0.0.0.0 -p 3000 -e production"]
+CMD ["bash", "-c", "bundle exec rails db:prepare && bundle exec rails db:seed && bundle exec rails assets:precompile && bundle exec rails server -b 0.0.0.0 -p 80 -e production"]
