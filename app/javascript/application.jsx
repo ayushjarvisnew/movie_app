@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./Components/App";
-
+import axios from "axios";
 
 document.addEventListener("DOMContentLoaded", () => {
     // Set CSRF token for all Axios requests
