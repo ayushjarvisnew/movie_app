@@ -20,9 +20,7 @@ const PaymentSuccess = () => {
             return;
         }
 
-        // axios.get(`http://localhost:3000/payments/success`, {params: { txnid, status },})
-        // axios.get(`http://localhost:3000/api/bookings/by_txn/${txnid}`)
-        axios.get(`http://localhost:3000/payments/success.json`, { params: { txnid, status } })
+        axios.get(`/payments/success.json`, { params: { txnid, status } })
 
             .then((res) => {
                 if (res.data.booking) {

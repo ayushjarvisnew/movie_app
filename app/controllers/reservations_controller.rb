@@ -8,40 +8,47 @@ class ReservationsController < ApplicationController
     render json: reservations.map { |r| format_reservation(r) }
   end
 
-
   def create
     seat_ids = reservation_params[:seat_ids]&.map(&:to_i) || []
     showtime = Showtime.find_by(id: reservation_params[:showtime_id])
     return render json: { error: "Showtime not found" }, status: :not_found unless showtime
     return render json: { error: "Select at least one seat" }, status: :unprocessable_entity if seat_ids.empty?
 
-    seats = Seat.where(id: seat_ids, screen_id: showtime.screen_id, available: true)
-    if seats.size != seat_ids.size
+    showtime_seats = ShowtimeSeat.where(showtime_id: showtime.id, seat_id: seat_ids, available: true)
+    if showtime_seats.size != seat_ids.size
       return render json: { error: "Some selected seats are not available" }, status: :unprocessable_entity
     end
 
+    seats = showtime_seats.map(&:seat)
     total_amount = seats.sum { |s| s.price.to_f }
 
     ActiveRecord::Base.transaction do
-      seats.lock! # prevent race conditions
+      showtime_seats.lock! # prevent double booking
+
+      txnid = "TXN#{SecureRandom.hex(8)}" # ✅ generate a unique transaction ID
 
       reservation = @current_user.reservations.create!(
         showtime: showtime,
         total_amount: total_amount,
-        payment_status: "pending"
+        payment_status: "pending",
+        txnid: txnid
       )
 
       reservation.seats << seats
-      seats.update_all(available: false)
 
-      render json: format_reservation(reservation), status: :created
+      showtime_seats.update_all(available: false)
+      showtime.update_available_seats!
+
+      render json: format_reservation(reservation).merge(txnid: txnid), status: :created
     end
+
 
   rescue ActiveRecord::RecordInvalid => e
     render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
   rescue => e
     render json: { error: e.message }, status: :unprocessable_entity
   end
+
 
   def index
     reservations = if @current_user.is_admin
@@ -57,7 +64,9 @@ class ReservationsController < ApplicationController
   def destroy
     if @reservation.showtime.start_time > Time.current
       ActiveRecord::Base.transaction do
-        @reservation.seats.update_all(available: true)
+        # @reservation.seats.update_all(available: true)
+        ShowtimeSeat.where(showtime_id: @reservation.showtime_id, seat_id: @reservation.seat_ids).update_all(available: true)
+        @reservation.showtime.update_available_seats!
         @reservation.soft_delete
       end
       render json: { message: "Reservation canceled successfully" }
@@ -69,7 +78,8 @@ class ReservationsController < ApplicationController
   def restore
     if @reservation.deleted_at.present?
       ActiveRecord::Base.transaction do
-        @reservation.seats.update_all(available: false)
+        ShowtimeSeat.where(showtime_id: @reservation.showtime_id, seat_id: @reservation.seat_ids).update_all(available: false)
+        @reservation.showtime.update_available_seats!
         @reservation.restore
       end
       render json: { message: "Reservation restored successfully" }
@@ -81,8 +91,10 @@ class ReservationsController < ApplicationController
   private
 
   def set_reservation
-    @reservation = if @current_user.is_admin Reservation.find_by(id: params[:id])
-                   else @current_user.reservations.find_by(id: params[:id])
+    @reservation = if @current_user.is_admin
+                     Reservation.find_by(id: params[:id])
+                   else
+                     @current_user.reservations.find_by(id: params[:id])
                    end
     render json: { error: "Reservation not found" }, status: :not_found unless @reservation
   end

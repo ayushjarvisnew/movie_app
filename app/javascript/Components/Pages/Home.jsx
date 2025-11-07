@@ -137,18 +137,10 @@ const Home = () => {
                     <a href="https://x.com/BookMyShow/"><i className="fab fa-twitter"></i> X (Twitter)</a>
                     <a href="https://www.youtube.com/user/BookMyShow/featured"><i className="fab fa-youtube"></i> YouTube</a>
                 </div>
-                {/*<div className="app-buttons">*/}
-                {/*    <button className="app-btn">📱 Download on App Store</button>*/}
-                {/*    <button className="app-btn">🤖 Get it on Play Store</button>*/}
-                {/*</div>*/}
             </section>
 
             <footer className="footer">
                 <div className="footer-links">
-                    {/*<Link to="/">About</Link> |*/}
-                    {/*<Link to="/terms">Terms</Link> |*/}
-                    {/*<Link to="/privacy">Privacy</Link> |*/}
-                    {/*<Link to="/contact">Contact</Link>*/}
                     <h4>About | Terms | Privacy | Contact</h4>
                 </div>
                 <p>© 2025 MovieReservationSystem</p>

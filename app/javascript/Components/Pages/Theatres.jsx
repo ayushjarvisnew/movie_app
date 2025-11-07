@@ -7,7 +7,7 @@ const Theatres = () => {
     const token = localStorage.getItem("token");
 
     const fetchTheatres = () => {
-        axios.get("http://localhost:3000/theatres", {
+        axios.get("/theatres", {
             headers: { Authorization: `Bearer ${token}` }
         })
             .then(res => {
@@ -23,7 +23,7 @@ const Theatres = () => {
 
     const handleDelete = id => {
         if (window.confirm("Are you sure you want to delete this theatre?")) {
-            axios.delete(`http://localhost:3000/theatres/${id}`, {
+            axios.delete(`/theatres/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             })
                 .then(() => fetchTheatres())

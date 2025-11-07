@@ -8,7 +8,6 @@ class PaymentsController < ApplicationController
     return render json: { error: "User not logged in" }, status: :unauthorized unless current_user
 
     txnid = "TXN#{Time.now.to_i}#{(Time.now.usec / 1000).to_i}#{rand(1000..9999)}"
-
     key = ENV.fetch("PAYU_KEY", "IkRmcc")
     salt = ENV.fetch("PAYU_SALT", "HYly8Qb0tP5qp46MPusFBdiTYWIjbuDf")
 
@@ -18,6 +17,7 @@ class PaymentsController < ApplicationController
     email = params[:email]
     phone = params[:phone]
     seat_ids = params[:seat_ids] || []
+    showtime_id = params[:showtime_id]
 
     return render json: { error: "No seats selected" }, status: :unprocessable_entity if seat_ids.empty?
     return render json: { error: "Amount missing" }, status: :unprocessable_entity unless amount.present?
@@ -32,6 +32,12 @@ class PaymentsController < ApplicationController
       return render json: { error: "You already have a pending payment. Try again after a minute." }, status: :too_many_requests
     end
 
+    showtime_seats = ShowtimeSeat.where(showtime_id: params[:showtime_id], seat_id: seat_ids, available: true)
+
+    if showtime_seats.empty?
+      return render json: { error: "Selected seats are not available" }, status: :unprocessable_entity
+    end
+
     hash_string = "#{key}|#{txnid}|#{amount}|#{productinfo}|#{firstname}|#{email}|||||||||||#{salt}"
     hash = Digest::SHA512.hexdigest(hash_string)
 
@@ -44,11 +50,8 @@ class PaymentsController < ApplicationController
       seats_count: 0
     )
 
-    seat_ids.each do |id|
-      seat = Seat.find_by(id: id)
-      next unless seat&.available
-      reservation.seats << seat
-    end
+    reservation.seats << showtime_seats.map(&:seat)
+    showtime_seats.update_all(available: false)
 
     render json: {
       key: key,
@@ -75,7 +78,6 @@ class PaymentsController < ApplicationController
 
     if reservation && status == "success"
       reservation.update(payment_status: "success")
-      reservation.seats.each { |seat| seat.update(available: false) }
 
       respond_to do |format|
         format.html do

@@ -29,14 +29,14 @@ const Admin = () => {
 
     const fetchUsers = () => {
         axios
-            .get("http://localhost:3000/users", { headers: { Authorization: `Bearer ${token}` } })
+            .get("/users", { headers: { Authorization: `Bearer ${token}` } })
             .then(res => setUsers(res.data))
             .catch(err => console.error(err));
     };
 
     const fetchMovies = () => {
         axios
-            .get("http://localhost:3000/api/movies", { headers: { Authorization: `Bearer ${token}` } })
+            .get("/api/movies", { headers: { Authorization: `Bearer ${token}` } })
             .then(res => setMovies(res.data))
             .catch(err => console.error(err));
     };
@@ -44,28 +44,28 @@ const Admin = () => {
 
     const fetchUpcomingMovies = () => {
         axios
-            .get("http://localhost:3000/api/upcoming_movies", { headers: { Authorization: `Bearer ${token}` } })
+            .get("/api/upcoming_movies", { headers: { Authorization: `Bearer ${token}` } })
             .then(res => setUpcomingMovies(res.data))
             .catch(err => console.error(err));
     };
 
     const fetchTheatres = () => {
         axios
-            .get("http://localhost:3000/theatres", { headers: { Authorization: `Bearer ${token}` } })
+            .get("/theatres", { headers: { Authorization: `Bearer ${token}` } })
             .then(res => setTheatres(res.data))
             .catch(err => console.error(err));
     };
 
     const fetchScreens = () => {
         axios
-            .get("http://localhost:3000/screens", { headers: { Authorization: `Bearer ${token}` } })
+            .get("/screens", { headers: { Authorization: `Bearer ${token}` } })
             .then(res => setScreens(res.data))
             .catch(err => console.error(err));
     };
 
     const fetchShowtimes = () => {
         axios
-            .get("http://localhost:3000/showtimes", { headers: { Authorization: `Bearer ${token}` } })
+            .get("/showtimes", { headers: { Authorization: `Bearer ${token}` } })
             .then(res => setShowtimes(res.data))
             .catch(err => console.error(err));
     };
@@ -74,7 +74,7 @@ const Admin = () => {
     const deleteUser = id => {
         if (!window.confirm("Delete this user?")) return;
         axios
-            .delete(`http://localhost:3000/users/${id}`, { headers: { Authorization: `Bearer ${token}` } })
+            .delete(`/users/${id}`, { headers: { Authorization: `Bearer ${token}` } })
             .then(fetchUsers)
             .catch(err => console.error(err));
     };
@@ -83,7 +83,7 @@ const Admin = () => {
         if (!window.confirm(`Promote ${user.name} to Admin?`)) return;
         axios
             .patch(
-                `http://localhost:3000/users/${user.id}`,
+                `/users/${user.id}`,
                 { user: { is_admin: true } },
                 { headers: { Authorization: `Bearer ${token}` } }
             )
@@ -95,7 +95,7 @@ const Admin = () => {
         if (!window.confirm(`Remove Admin rights from ${user.name}?`)) return;
         axios
             .patch(
-                `http://localhost:3000/users/${user.id}`,
+                `/users/${user.id}`,
                 { user: { is_admin: false } },
                 { headers: { Authorization: `Bearer ${token}` } }
             )
@@ -106,7 +106,7 @@ const Admin = () => {
     const deleteMovie = id => {
         if (!window.confirm("Delete this movie?")) return;
         axios
-            .delete(`http://localhost:3000/api/movies/${id}`, { headers: { Authorization: `Bearer ${token}` } })
+            .delete(`/api/movies/${id}`, { headers: { Authorization: `Bearer ${token}` } })
             .then(() => {
                 fetchMovies();
                 fetchUpcomingMovies(); // 🆕 Refresh both lists
@@ -117,7 +117,7 @@ const Admin = () => {
     const deleteTheatre = id => {
         if (!window.confirm("Delete this theatre?")) return;
         axios
-            .delete(`http://localhost:3000/theatres/${id}`, { headers: { Authorization: `Bearer ${token}` } })
+            .delete(`/theatres/${id}`, { headers: { Authorization: `Bearer ${token}` } })
             .then(fetchTheatres)
             .catch(err => console.error(err));
     };
@@ -125,7 +125,7 @@ const Admin = () => {
     const deleteScreen = id => {
         if (!window.confirm("Delete this screen?")) return;
         axios
-            .delete(`http://localhost:3000/screens/${id}`, { headers: { Authorization: `Bearer ${token}` } })
+            .delete(`/screens/${id}`, { headers: { Authorization: `Bearer ${token}` } })
             .then(fetchScreens)
             .catch(err => console.error(err));
     };
@@ -133,7 +133,7 @@ const Admin = () => {
     const deleteShowtime = id => {
         if (!window.confirm("Delete this showtime?")) return;
         axios
-            .delete(`http://localhost:3000/showtimes/${id}`, { headers: { Authorization: `Bearer ${token}` } })
+            .delete(`/showtimes/${id}`, { headers: { Authorization: `Bearer ${token}` } })
             .then(fetchShowtimes)
             .catch(err => console.error(err));
     };

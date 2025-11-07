@@ -10,7 +10,7 @@ const ShowtimeList = () => {
 
     const fetchShowtimes = () => {
         axios
-            .get("http://127.0.0.1:3000/showtimes", {
+            .get("/showtimes", {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((res) => {
@@ -29,7 +29,7 @@ const ShowtimeList = () => {
     const handleDelete = (id) => {
         if (!window.confirm("Are you sure?")) return;
         axios
-            .delete(`http://127.0.0.1:3000/showtimes/${id}`, {
+            .delete(`/showtimes/${id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then(() => fetchShowtimes())

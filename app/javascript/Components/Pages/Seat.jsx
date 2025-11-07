@@ -7,7 +7,7 @@ const Seat = forwardRef(({ onEditSeat }, ref) => {
 
     const fetchSeats = () => {
         axios
-            .get("http://localhost:3000/seats", {
+            .get("/seats", {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((res) => {

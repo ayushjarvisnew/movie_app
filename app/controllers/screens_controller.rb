@@ -4,8 +4,6 @@ class ScreensController < ApplicationController
   before_action :set_screen, only: [:show, :update, :destroy]
 
   def index
-      # screens = Screen.includes(:theatre).all
-      # render json: screens.as_json(include: { theatre: { only: [:id, :name] } }, only: [:id, :name, :total_seats, :screen_type])
       render json: Screen.active.includes(:theatre).map { |s| screen_json(s) }
   end
 

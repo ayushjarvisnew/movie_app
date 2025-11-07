@@ -4,13 +4,10 @@ class Screen < ApplicationRecord
   has_many :showtimes, dependent: :destroy
   has_many :seats, dependent: :destroy
 
-
   validates :name, presence: true
   validates :total_seats, numericality: { greater_than: 0 }
 
-
   scope :active, -> { where(deleted_at: nil) }
-
 
   def available_seats
     seats.where(available: true)
@@ -19,7 +16,6 @@ class Screen < ApplicationRecord
   after_create :generate_seats
 
   private
-
 
   def generate_seats
     return if total_seats.zero?

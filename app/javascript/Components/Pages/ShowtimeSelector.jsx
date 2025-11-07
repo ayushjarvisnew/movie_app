@@ -12,7 +12,7 @@ const ShowtimeSelector = ({ movie, onSelectShowtime }) => {
         setLoading(true);
         setError(null);
 
-        axios.get(`http://localhost:3000/api/movies/${movie.id}/showtimes`, {
+        axios.get(`/api/movies/${movie.id}/showtimes`, {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((res) => {
@@ -47,7 +47,6 @@ const ShowtimeSelector = ({ movie, onSelectShowtime }) => {
                             cursor: "pointer",
                         }}
                     >
-                        {/*{new Date(show.start_time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}*/}
                         {new Date(show.start_time).toLocaleString("en-GB", {
                             day: "2-digit",
                             month: "short",

@@ -22,27 +22,42 @@ class ShowtimesController < ApplicationController
   end
 
 
-  def available_seats
-    seats = @showtime.screen.seats.order(:row, :seat_number)
-    booked_seat_ids = @showtime.reservations.joins(:seats).pluck("seats.id")
-
-    render json: seats.map do |s|
-      {
-        id: s.id,
-        row: s.row,
-        seat_number: s.seat_number,
-        seat_type: s.seat_type,
-        price: s.price,
-        available: !booked_seat_ids.include?(s.id)
-      }
-    end
-  end
+  # def available_seats
+  #   seats = @showtime.screen.seats.order(:row, :seat_number)
+  #   booked_seat_ids = @showtime.reservations.joins(:seats).pluck("seats.id")
+  #
+  #   render json: seats.map do |s|
+  #     {
+  #       id: s.id,
+  #       row: s.row,
+  #       seat_number: s.seat_number,
+  #       seat_type: s.seat_type,
+  #       price: s.price,
+  #       available: !booked_seat_ids.include?(s.id)
+  #     }
+  #   end
+  # end
   # def available_seats
   #   showtime = Showtime.find(params[:id])
   #   seats = showtime.screen.seats.where(available: true)
   #
   #   render json: seats.as_json(only: [:id, :row, :seat_number, :seat_type, :available, :price])
   # end
+  def available_seats
+    showtime = Showtime.find(params[:id])
+    showtime_seats = showtime.showtime_seats.includes(:seat).order("seats.row, seats.seat_number")
+
+    render json: showtime_seats.map { |ss|
+      {
+        id: ss.seat.id,
+        row: ss.seat.row,
+        seat_number: ss.seat.seat_number,
+        seat_type: ss.seat.seat_type,
+        price: ss.seat.price,
+        available: ss.available
+      }
+    }
+  end
 
 
   def book_seats

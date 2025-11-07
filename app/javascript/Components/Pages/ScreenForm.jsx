@@ -14,7 +14,7 @@ const ScreenForm = ({ screen, onSuccess }) => {
 
     useEffect(() => {
         axios
-            .get("http://localhost:3000/theatres", {
+            .get("/theatres", {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((res) => {
@@ -38,10 +38,10 @@ const ScreenForm = ({ screen, onSuccess }) => {
         };
 
         const request = screen
-            ? axios.put(`http://localhost:3000/screens/${screen.id}`, payload, {
+            ? axios.put(`/screens/${screen.id}`, payload, {
                 headers: { Authorization: `Bearer ${token}` },
             })
-            : axios.post("http://localhost:3000/screens", payload, {
+            : axios.post("/screens", payload, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 

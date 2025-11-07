@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_03_044927) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_07_085923) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -106,6 +106,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_03_044927) do
     t.index ["screen_id"], name: "index_seats_on_screen_id"
   end
 
+  create_table "showtime_seats", force: :cascade do |t|
+    t.bigint "showtime_id", null: false
+    t.bigint "seat_id", null: false
+    t.boolean "available", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["seat_id"], name: "index_showtime_seats_on_seat_id"
+    t.index ["showtime_id", "seat_id"], name: "index_showtime_seats_on_showtime_id_and_seat_id", unique: true
+    t.index ["showtime_id"], name: "index_showtime_seats_on_showtime_id"
+  end
+
   create_table "showtimes", force: :cascade do |t|
     t.bigint "movie_id", null: false
     t.bigint "screen_id", null: false
@@ -162,6 +173,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_03_044927) do
   add_foreign_key "reservations_seats", "seats"
   add_foreign_key "screens", "theatres"
   add_foreign_key "seats", "screens"
+  add_foreign_key "showtime_seats", "seats"
+  add_foreign_key "showtime_seats", "showtimes"
   add_foreign_key "showtimes", "movies"
   add_foreign_key "showtimes", "screens"
 end

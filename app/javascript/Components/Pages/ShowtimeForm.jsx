@@ -25,10 +25,10 @@ const ShowtimeForm = ({ showtime = null, onSuccess }) => {
         const fetchData = async () => {
             try {
                 const [moviesRes, screensRes] = await Promise.all([
-                    axios.get("http://127.0.0.1:3000/api/movies", {
+                    axios.get("/api/movies", {
                         headers: { Authorization: `Bearer ${token}` },
                     }),
-                    axios.get("http://127.0.0.1:3000/screens", {
+                    axios.get("/screens", {
                         headers: { Authorization: `Bearer ${token}` },
                     }),
                 ]);
@@ -56,8 +56,8 @@ const ShowtimeForm = ({ showtime = null, onSuccess }) => {
         };
 
         const url = showtime
-            ? `http://127.0.0.1:3000/showtimes/${showtime.id}`
-            : "http://127.0.0.1:3000/showtimes";
+            ? `/showtimes/${showtime.id}`
+            : "/showtimes";
         const method = showtime ? "patch" : "post";
 
         try {

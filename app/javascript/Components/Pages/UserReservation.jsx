@@ -11,6 +11,10 @@ const formatDay = (dateStr) => {
         year: "numeric",
     });
 };
+const formatTime = (dateStr) => {
+    const date = new Date(dateStr);
+    return date.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit' });
+};
 
 const UserReservation = ({ movieId }) => {
     const [date, setDate] = useState("");
@@ -23,7 +27,7 @@ const UserReservation = ({ movieId }) => {
         if (!date) return;
         try {
             const res = await axios.get(
-                `http://localhost:3000/showtimes?movie_id=${movieId}&date=${date}`
+                `/showtimes?movie_id=${movieId}&date=${date}`
             );
             console.log("Showtimes response:", res.data);
             setShowtimes(res.data);
@@ -39,7 +43,7 @@ const UserReservation = ({ movieId }) => {
     }, [date]);
 
     const showtimesByTheatre = showtimes.reduce((acc, st) => {
-        const theatreName = st.theatre_name || "Unknown Theatre";
+        const theatreName = st.screen?.theatre?.name || "Unknown Theatre";
         if (!acc[theatreName]) acc[theatreName] = [];
         acc[theatreName].push(st);
         return acc;
@@ -99,11 +103,15 @@ const UserReservation = ({ movieId }) => {
                             }}
                             onClick={() => handleShowtimeClick(st)}
                         >
-                            <p>Screen: {st.screen_name}</p>
+                            <p>Screen: {st.screen?.name || "Unknown Screen"}</p>
+                            {/*<p>*/}
+                            {/*    {formatDay(st.start_time)} | Seats Available:{" "}*/}
+                            {/*    {st.available_seats}*/}
+                            {/*</p>*/}
                             <p>
-                                {formatDay(st.start_time)} | Seats Available:{" "}
-                                {st.available_seats}
+                                {formatDay(st.start_time)} @ {formatTime(st.start_time)} | Seats Available: {st.available_seats}
                             </p>
+
                         </div>
                     ))}
                 </div>

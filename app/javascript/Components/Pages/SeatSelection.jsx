@@ -12,9 +12,10 @@ const SeatSelection = ({ showtime, onClose }) => {
         if (!showtime?.id) return;
         setLoading(true);
         try {
-            const res = await axios.get(
-                `http://localhost:3000/showtimes/${showtime.id}/available_seats`,
-                { headers: { Authorization: `Bearer ${token}` } }
+            const res = await
+                axios.get(
+                    `/showtimes/${showtime.id}/available_seats`,
+            { headers: { Authorization: `Bearer ${token}` } }
             );
             setSeats(Array.isArray(res.data) ? res.data : []);
             setSelectedSeats([]);
@@ -62,7 +63,7 @@ const SeatSelection = ({ showtime, onClose }) => {
         }
         try {
             const res = await axios.post(
-                "http://localhost:3000/payments/initiate",
+                "/payments/initiate",
                 {
                     showtime_id: showtime.id,
                     seat_ids: selectedSeats,
