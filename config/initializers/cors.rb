@@ -11,7 +11,8 @@
 #
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins 'http://localhost:3000','http://127.0.0.0:3000', 'https://movie-app-3cv5.onrender.com'
+    origins 'http://localhost:3000', 'http://127.0.0.1:3000', 'https://movie-frontend.onrender.com'
+
     resource '*',
              headers: :any,
              methods: [:get, :post, :put, :patch, :delete, :options, :head],
