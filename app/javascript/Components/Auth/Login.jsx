@@ -12,7 +12,7 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post("/login", { email, password });
+            const res = await axios.post("http://localhost:3000/login", { email, password });
             const { token, user } = res.data;
 
             localStorage.setItem("token", token);
