@@ -33,7 +33,7 @@ const MovieForm = ({ movie = null, onSuccess }) => {
     }, [movie]);
 
     useEffect(() => {
-        axios.get("/tags", { headers: { Authorization: `Bearer ${token}` } })
+        axios.get("http://localhost:3000/tags", { headers: { Authorization: `Bearer ${token}` } })
             .then(res => setTagOptions(res.data))
             .catch(err => console.error("Error fetching tags:", err));
     }, [token]);
@@ -57,7 +57,7 @@ const MovieForm = ({ movie = null, onSuccess }) => {
             release_date: releaseDate, duration, rating,
             tag_ids: selectedTags, new_tags: newTags
         };
-        const url = movie ? `/api/movies/${movie.id}` : "/api/movies";
+        const url = movie ? `http://localhost:3000/api/movies/${movie.id}` : "http://localhost:3000/api/movies";
         const method = movie ? "patch" : "post";
 
         axios({ method, url, data: { movie: payload }, headers: { Authorization: `Bearer ${token}` } })

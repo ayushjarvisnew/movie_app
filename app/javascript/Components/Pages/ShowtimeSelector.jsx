@@ -12,7 +12,7 @@ const ShowtimeSelector = ({ movie, onSelectShowtime }) => {
         setLoading(true);
         setError(null);
 
-        axios.get(`/api/movies/${movie.id}/showtimes`, {
+        axios.get(`http://localhost:3000/api/movies/${movie.id}/showtimes`, {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((res) => {

@@ -27,7 +27,7 @@ const UserReservation = ({ movieId }) => {
         if (!date) return;
         try {
             const res = await axios.get(
-                `/showtimes?movie_id=${movieId}&date=${date}`
+                `http://localhost:3000/showtimes?movie_id=${movieId}&date=${date}`
             );
             console.log("Showtimes response:", res.data);
             setShowtimes(res.data);

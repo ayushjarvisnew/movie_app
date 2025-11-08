@@ -12,7 +12,7 @@ const SeatForm = () => {
     useEffect(() => {
         const token = localStorage.getItem("token");
         axios
-            .get("/screens", {
+            .get("http://localhost:3000/screens", {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((res) => {
@@ -27,7 +27,7 @@ const SeatForm = () => {
         try {
             const token = localStorage.getItem("token");
             await axios.post(
-                "/seats",
+                "http://localhost:3000/seats",
                 {
                     seat: {
                         screen_id: parseInt(screenId),

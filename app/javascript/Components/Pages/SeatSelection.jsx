@@ -14,7 +14,7 @@ const SeatSelection = ({ showtime, onClose }) => {
         try {
             const res = await
                 axios.get(
-                    `/showtimes/${showtime.id}/available_seats`,
+                    `http://localhost:3000/showtimes/${showtime.id}/available_seats`,
             { headers: { Authorization: `Bearer ${token}` } }
             );
             setSeats(Array.isArray(res.data) ? res.data : []);
@@ -63,7 +63,7 @@ const SeatSelection = ({ showtime, onClose }) => {
         }
         try {
             const res = await axios.post(
-                "/payments/initiate",
+                "http://localhost:3000/payments/initiate",
                 {
                     showtime_id: showtime.id,
                     seat_ids: selectedSeats,

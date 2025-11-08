@@ -21,8 +21,8 @@ const UserDashboard = () => {
         setLoading(true);
         try {
             const [userRes, reservationRes] = await Promise.all([
-                axios.get("/current_user", { headers }),
-                axios.get("/reservations/my_reservations", { headers }),
+                axios.get("http://localhost:3000/current_user", { headers }),
+                axios.get("http://localhost:3000/reservations/my_reservations", { headers }),
             ]);
 
             setUser(userRes.data.user);
@@ -48,7 +48,7 @@ const UserDashboard = () => {
 
         setCancelling(reservationId);
         try {
-            await axios.delete(`/reservations/${reservationId}`, { headers });
+            await axios.delete(`http://localhost:3000/reservations/${reservationId}`, { headers });
             alert("Reservation cancelled successfully!");
             fetchData();
 

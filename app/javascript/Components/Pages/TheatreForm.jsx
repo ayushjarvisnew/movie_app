@@ -32,7 +32,7 @@ const TheatreForm = ({ theatre = null, onSuccess }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         const payload = { name, address, city, state, country, rating: parseFloat(rating) };
-        const url = theatre ? `/theatres/${theatre.id}` : "/theatres";
+        const url = theatre ? `http://localhost:3000/theatres/${theatre.id}` : "http://localhost:3000/theatres";
         const method = theatre ? "patch" : "post";
 
         axios({ method, url, data: { theatre: payload }, headers: { Authorization: `Bearer ${token}` } })
