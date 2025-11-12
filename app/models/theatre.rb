@@ -1,5 +1,7 @@
 class Theatre < ApplicationRecord
 
+  acts_as_paranoid
+
   has_many :screens, dependent: :destroy
 
   validates :name, presence: true
@@ -9,12 +11,6 @@ class Theatre < ApplicationRecord
 
   scope :active, -> { where(deleted_at: nil) }
 
-  def soft_delete
-    update(deleted_at: Time.current)
-  end
 
-  def restore
-    update(deleted_at: nil)
-  end
 
 end

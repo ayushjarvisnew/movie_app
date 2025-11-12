@@ -1,4 +1,7 @@
 class Showtime < ApplicationRecord
+
+  acts_as_paranoid
+
   belongs_to :movie
   belongs_to :screen
   has_one :theatre, through: :screen
@@ -19,13 +22,7 @@ class Showtime < ApplicationRecord
   before_create :set_available_seats
   after_create :initialize_showtime_seats
 
-  def soft_delete
-    update(deleted_at: Time.current)
-  end
 
-  def restore
-    update(deleted_at: nil)
-  end
 
   # ✅ Update available seats using ShowtimeSeats now
   def update_available_seats!

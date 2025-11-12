@@ -62,18 +62,31 @@ class ReservationsController < ApplicationController
 
 
   def destroy
+    if @reservation.showtime.nil?
+
+      @reservation.destroy
+      return render json: { message: "Reservation soft-deleted (showtime missing)" }
+    end
+
     if @reservation.showtime.start_time > Time.current
       ActiveRecord::Base.transaction do
-        # @reservation.seats.update_all(available: true)
-        ShowtimeSeat.where(showtime_id: @reservation.showtime_id, seat_id: @reservation.seat_ids).update_all(available: true)
+
+        ShowtimeSeat.where(
+          showtime_id: @reservation.showtime_id,
+          seat_id: @reservation.seat_ids
+        ).update_all(available: true)
+
         @reservation.showtime.update_available_seats!
-        @reservation.soft_delete
+
+        @reservation.destroy
       end
-      render json: { message: "Reservation canceled successfully" }
+      render json: { message: "Reservation cancelled successfully" }
     else
       render json: { error: "Cannot cancel past reservations" }, status: :forbidden
     end
   end
+
+
 
   def restore
     if @reservation.deleted_at.present?
@@ -103,12 +116,17 @@ class ReservationsController < ApplicationController
     params.require(:reservation).permit(:showtime_id, seat_ids: [])
   end
 
+
   def format_reservation(reservation, include_user: false)
+    showtime = reservation.showtime
+    screen = showtime&.screen
+    theatre = screen&.theatre
+
     data = {
       id: reservation.id,
-      movie_title: reservation.showtime&.movie&.title,
-      theatre_name: reservation.showtime&.screen&.theatre&.name,
-      showtime_time: reservation.showtime&.start_time.in_time_zone("Asia/Kolkata").strftime("%d %b %Y, %H:%M"),
+      movie_title: showtime&.movie&.title || "N/A",
+      theatre_name: theatre&.name || "N/A",
+      showtime_time: showtime&.start_time ? showtime.start_time.in_time_zone("Asia/Kolkata").strftime("%d %b %Y, %H:%M") : "N/A",
       seats: reservation.seats.map { |s| "#{s.row}#{s.seat_number}" },
       total_amount: reservation.total_amount,
       payment_status: reservation.payment_status,
@@ -122,6 +140,7 @@ class ReservationsController < ApplicationController
 
     data
   end
+
   def show_by_txn
     reservation = Reservation.find_by(txnid: params[:txnid])
 

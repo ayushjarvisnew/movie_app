@@ -1,24 +1,34 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "../Css/SeatSelection.css"; // ✅ Import the new CSS file
+import "../Css/SeatSelection.css";
 
 const SeatSelection = ({ showtime, onClose }) => {
     const [seats, setSeats] = useState([]);
     const [selectedSeats, setSelectedSeats] = useState([]);
     const [loading, setLoading] = useState(false);
+
+    const navigate = useNavigate();
     const token = localStorage.getItem("token");
+    const isAdmin = localStorage.getItem("isAdmin") === "true";
+
+    useEffect(() => {
+        if (!token) return;
+        if (isAdmin) {
+            alert("Admins cannot book tickets from here.");
+            navigate("/admin");
+        }
+    }, []);
 
     const fetchSeats = async () => {
         if (!showtime?.id) return;
         setLoading(true);
         try {
-            const res = await
-                axios.get(
-                    `http://localhost:3000/showtimes/${showtime.id}/available_seats`,
-            { headers: { Authorization: `Bearer ${token}` } }
+            const res = await axios.get(
+                `http://localhost:3000/showtimes/${showtime.id}/available_seats`,
+                { headers: { Authorization: `Bearer ${token}` } }
             );
             setSeats(Array.isArray(res.data) ? res.data : []);
-            setSelectedSeats([]);
         } catch (err) {
             console.error(err);
             alert("Failed to load seats.");
@@ -34,9 +44,7 @@ const SeatSelection = ({ showtime, onClose }) => {
     const toggleSeat = (seat) => {
         if (!seat.available) return;
         setSelectedSeats((prev) =>
-            prev.includes(seat.id)
-                ? prev.filter((id) => id !== seat.id)
-                : [...prev, seat.id]
+            prev.includes(seat.id) ? prev.filter((id) => id !== seat.id) : [...prev, seat.id]
         );
     };
 
@@ -56,47 +64,26 @@ const SeatSelection = ({ showtime, onClose }) => {
     const totalPrice = selectedSeatObjects.reduce((sum, s) => sum + Number(s.price || 0), 0);
     const seatNumbers = selectedSeatObjects.map((s) => `${s.row}${s.seat_number}`).join(", ");
 
-    const handlePayAndBook = async () => {
+    const handlePayAndBook = () => {
         if (selectedSeats.length === 0) {
             alert("Select at least one seat.");
             return;
         }
-        try {
-            const res = await axios.post(
-                "http://localhost:3000/payments/initiate",
-                {
-                    showtime_id: showtime.id,
-                    seat_ids: selectedSeats,
-                    amount: totalPrice,
-                    firstname: "User",
-                    email: "user@gmail.com",
-                    phone: "1234567890",
-                    productinfo: "Movie Tickets",
-                },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
 
-            const data = res.data;
+        // Save selection to localStorage
+        localStorage.setItem(
+            "pendingBooking",
+            JSON.stringify({
+                showtimeId: showtime.id,
+                selectedSeats,
+                totalPrice,
+            })
+        );
 
-            const form = document.createElement("form");
-            form.method = "POST";
-            form.action = data.action;
-
-            Object.keys(data).forEach((key) => {
-                const input = document.createElement("input");
-                input.type = "hidden";
-                input.name = key;
-                input.value = data[key];
-                form.appendChild(input);
-            });
-
-            document.body.appendChild(form);
-            form.submit();
-
-            setSelectedSeats([]);
-        } catch (err) {
-            console.error(err);
-            alert("Payment initiation failed.");
+        if (!token) {
+            navigate("/login");
+        } else {
+            navigate("/payment");
         }
     };
 

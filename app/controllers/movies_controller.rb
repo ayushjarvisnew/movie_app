@@ -19,7 +19,6 @@ class MoviesController < ApplicationController
 
   def create
     @movie = Movie.new(movie_params.except(:tag_ids, :new_tags))
-
     if @movie.save
       ActiveRecord::Base.transaction do
         attach_tags(@movie, movie_params[:tag_ids])
@@ -44,10 +43,9 @@ class MoviesController < ApplicationController
     end
   end
 
-
   def destroy
-    @movie.soft_delete
-    head :no_content
+    @movie.destroy
+    render json: { message: "Movie deleted successfully" }
   end
 
   def showtimes

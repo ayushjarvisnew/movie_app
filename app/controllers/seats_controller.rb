@@ -15,6 +15,14 @@ class SeatsController < ApplicationController
     end
   end
 
+  def destroy
+    if @seat.destroy
+      render json: { message: "Seat soft-deleted successfully" }
+    else
+      render json: { errors: @seat.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def set_screen

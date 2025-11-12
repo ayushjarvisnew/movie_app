@@ -29,10 +29,9 @@ class TheatresController < ApplicationController
   end
 
   def destroy
-    @theatre.update(deleted_at: Time.current)
-    render json: { message: "Theatre soft-deleted successfully" }
+    @theatre.destroy
+    render json: { message: "Theatre deleted successfully" }
   end
-
   private
 
   def theatre_params

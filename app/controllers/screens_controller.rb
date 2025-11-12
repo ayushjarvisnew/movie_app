@@ -28,8 +28,9 @@ class ScreensController < ApplicationController
     end
   end
 
+
   def destroy
-    if @screen.update(deleted_at: Time.current)
+    if @screen.destroy
       render json: { message: "Screen soft-deleted successfully" }
     else
       render json: { errors: @screen.errors.full_messages }, status: :unprocessable_entity

@@ -148,6 +148,53 @@
     transform: scale(1.02);
     box-shadow: 0 4px 14px rgba(0, 123, 255, 0.3);
 }
+/* 🎬 Form Button Container (Submit + Cancel side by side) */
+.movie-form-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    grid-column: span 2;
+}
+
+/* 🎬 Shared button base style (same size, font, padding) */
+.movie-submit-btn,
+.movie-cancel-btn {
+    flex: 1;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.25s ease;
+}
+
+/* ✅ Submit / Update Movie button (already styled) */
+.movie-submit-btn {
+    background: linear-gradient(90deg, #007bff, #6610f2);
+    color: white;
+}
+
+/* ❌ Cancel Edit button */
+.movie-cancel-btn {
+    background: linear-gradient(90deg, #dc3545, #ff5c5c);
+    color: white;
+}
+
+/* Hover effects */
+.movie-submit-btn:hover,
+.movie-cancel-btn:hover {
+    transform: scale(1.02);
+}
+
+/* 🎯 Specific hover shadows */
+.movie-submit-btn:hover {
+    box-shadow: 0 4px 14px rgba(0, 123, 255, 0.3);
+}
+.movie-cancel-btn:hover {
+    box-shadow: 0 4px 14px rgba(220, 53, 69, 0.3);
+}
 
 @keyframes fadeIn {
     from {

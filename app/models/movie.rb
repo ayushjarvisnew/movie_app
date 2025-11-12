@@ -1,6 +1,6 @@
 class Movie < ApplicationRecord
-  acts_as_paranoid
 
+  acts_as_paranoid
 
   has_many :movie_tags, dependent: :destroy
   has_many :tags, through: :movie_tags

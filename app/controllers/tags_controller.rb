@@ -29,10 +29,7 @@ class TagsController < ApplicationController
     end
   end
 
-  # def destroy
-  #   @tag.destroy
-  #   head :no_content
-  # end
+
   def destroy
     if @tag.movies.exists?
       render json: { error: "Cannot delete tag in use by movies" }, status: :forbidden

@@ -74,9 +74,17 @@ const Admin = () => {
     const deleteUser = id => {
         if (!window.confirm("Delete this user?")) return;
         axios
-            .delete(`http://localhost:3000/users/${id}`, { headers: { Authorization: `Bearer ${token}` } })
-            .then(fetchUsers)
-            .catch(err => console.error(err));
+            .delete(`http://localhost:3000/users/${id}`, {
+             headers: { Authorization: `Bearer ${token}` } })
+            .then(() => {
+                fetchUsers();
+                alert("User deleted successfully!");
+            })
+            .catch((err) => {
+                const message = err.response?.data?.error || "Failed to delete user.";
+                alert(message);
+                console.error(err);
+            });
     };
 
     const promoteToAdmin = user => {
@@ -109,9 +117,13 @@ const Admin = () => {
             .delete(`http://localhost:3000/api/movies/${id}`, { headers: { Authorization: `Bearer ${token}` } })
             .then(() => {
                 fetchMovies();
-                fetchUpcomingMovies(); // 🆕 Refresh both lists
+                fetchUpcomingMovies();
+                alert("Movie deleted successfully!");
             })
-            .catch(err => console.error(err));
+            .catch((err) => {
+                const message = err.response?.data?.error || "Failed to delete movie.";
+                alert(message);
+            });
     };
 
     const deleteTheatre = id => {
@@ -144,6 +156,11 @@ const Admin = () => {
         movieFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     };
 
+    const handleCancelEditMovie = () => {
+        setEditingMovie(null);
+        movieFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+
     const handleEditTheatre = theatre => {
         setEditingTheatre(theatre);
         theatreFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -170,7 +187,7 @@ const Admin = () => {
     useEffect(() => {
         fetchUsers();
         fetchMovies();
-        fetchUpcomingMovies(); // 🆕 Added
+        fetchUpcomingMovies();
         fetchTheatres();
         fetchScreens();
         fetchShowtimes();
@@ -301,6 +318,7 @@ const Admin = () => {
                             fetchMovies();
                             fetchUpcomingMovies();
                         }}
+                        onCancel={() => setEditingMovie(null)}
                     />
                     <h2>Active Movies</h2>
                     <div className="cards-grid">{renderCards(movies, "movies")}</div>
@@ -317,6 +335,7 @@ const Admin = () => {
                         key={editingTheatre?.id || "new"}
                         theatre={editingTheatre}
                         onSuccess={() => { setEditingTheatre(null); fetchTheatres(); }}
+                        onCancel={() => setEditingTheatre(null)}
                     />
                     <h2>Theatres</h2>
                     <div className="cards-grid">{renderCards(theatres, "theatres")}</div>
@@ -329,6 +348,7 @@ const Admin = () => {
                         key={editingScreen?.id || "new"}
                         screen={editingScreen}
                         onSuccess={() => { setEditingScreen(null); fetchScreens(); }}
+                        onCancel={() => setEditingScreen(null)}
                     />
                     <h2>Screens</h2>
                     <div className="cards-grid">{renderCards(screens, "screens")}</div>
@@ -341,6 +361,7 @@ const Admin = () => {
                         key={editingShowtime?.id || "new"}
                         showtime={editingShowtime}
                         onSuccess={() => { setEditingShowtime(null); fetchShowtimes(); }}
+                        onCancel={() => setEditingShowtime(null)}
                     />
                     <h2>Showtimes</h2>
                     <div className="cards-grid">{renderCards(showtimes, "showtimes")}</div>

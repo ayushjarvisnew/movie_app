@@ -6,6 +6,8 @@ class PaymentsController < ApplicationController
 
   def initiate
     return render json: { error: "User not logged in" }, status: :unauthorized unless current_user
+    return render json: { error: "Admins cannot book tickets" }, status: :forbidden if current_user.is_admin
+
 
     txnid = "TXN#{Time.now.to_i}#{(Time.now.usec / 1000).to_i}#{rand(1000..9999)}"
     key = ENV.fetch("PAYU_KEY", "IkRmcc")
@@ -66,10 +68,12 @@ class PaymentsController < ApplicationController
       furl: "http://localhost:3000/payment-failure",
       action: "https://test.payu.in/_payment"
     }
+
   rescue => e
-    Rails.logger.error("Payment initiation error: #{e.message}")
-    render json: { error: "Payment initiation failed" }, status: :internal_server_error
+    Rails.logger.error("Payment initiation error: #{e.full_message}")  # Full stack trace
+    render json: { error: e.message, backtrace: e.backtrace }, status: :internal_server_error
   end
+
 
   def success
     txnid = params[:txnid]
@@ -79,19 +83,20 @@ class PaymentsController < ApplicationController
     if reservation && status == "success"
       reservation.update(payment_status: "success")
 
+      ShowtimeSeat.where(showtime_id: reservation.showtime_id, seat_id: reservation.seats.pluck(:id))
+                  .update_all(available: false)
+
       respond_to do |format|
         format.html do
           redirect_to "http://localhost:3000/payments/success?txnid=#{txnid}&status=success"
         end
-
         format.json do
           render json: {
             booking: {
               txnid: reservation.txnid,
-              movie: reservation.showtime.movie.title,
-              theatre: reservation.showtime.screen.theatre.name,
-              showtime: reservation.showtime.start_time,
-              # seats: reservation.seats.map(&:seat_number),
+              movie: reservation.showtime&.movie&.title || "N/A",
+              theatre: reservation.showtime&.screen&.theatre&.name || "N/A",
+              showtime: reservation.showtime&.start_time,
               seats: reservation.seats.map { |s| "#{s.row}#{s.seat_number}" },
               amount: reservation.total_amount
             }
@@ -112,8 +117,11 @@ class PaymentsController < ApplicationController
   def failure
     txnid = params[:txnid]
     reservation = Reservation.find_by(txnid: txnid)
-    reservation.update(payment_status: "failed") if reservation
-
+    if reservation
+    reservation.update(payment_status: "failed")
+    ShowtimeSeat.where(showtime_id: reservation.showtime_id, seat_id: reservation.seats.pluck(:id))
+                .update_all(available: true)
+  end
     redirect_to "http://localhost:3000/payments/failure?txnid=#{txnid}&status=failure"
   end
 end

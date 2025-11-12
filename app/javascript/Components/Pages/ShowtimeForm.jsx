@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import "../Css/Showtime.css"; // ✅ External CSS
 
-const ShowtimeForm = ({ showtime = null, onSuccess }) => {
+const ShowtimeForm = ({ showtime = null, onSuccess, onCancel }) => { // 🔹 Added onCancel prop
     const token = localStorage.getItem("token");
 
     const formatDateTimeLocal = (isoString) => {
@@ -55,9 +56,7 @@ const ShowtimeForm = ({ showtime = null, onSuccess }) => {
             },
         };
 
-        const url = showtime
-            ? `/showtimes/${showtime.id}`
-            : "/showtimes";
+        const url = showtime ? `/showtimes/${showtime.id}` : "/showtimes";
         const method = showtime ? "patch" : "post";
 
         try {
@@ -78,44 +77,15 @@ const ShowtimeForm = ({ showtime = null, onSuccess }) => {
         }
     };
 
-    const formGroup = { display: "flex", flexDirection: "column", marginBottom: "15px" };
-    const label = { marginBottom: "5px", fontWeight: "bold" };
-    const input = {
-        padding: "8px 10px",
-        borderRadius: "6px",
-        border: "1px solid #ccc",
-        fontSize: "14px",
-    };
-    const button = {
-        padding: "10px 15px",
-        backgroundColor: showtime ? "#4CAF50" : "#1E90FF",
-        color: "white",
-        border: "none",
-        borderRadius: "6px",
-        cursor: "pointer",
-        fontWeight: "bold",
-        transition: "0.3s",
-    };
-    const container = {
-        maxWidth: "500px",
-        margin: "30px auto",
-        padding: "25px",
-        border: "1px solid #ddd",
-        borderRadius: "10px",
-        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-        backgroundColor: "#fff",
-    };
-    const heading = { textAlign: "center", marginBottom: "20px", color: "#333" };
-
     return (
-        <div style={container}>
-            <h2 style={heading}>{showtime ? "Edit Showtime" : "Add Showtime"}</h2>
-            <form onSubmit={handleSubmit}>
-                {/* Movie selection */}
-                <div style={formGroup}>
-                    <label style={label}>Movie:</label>
+        <div className="showtime-form-section">
+            <h2>{showtime ? "Edit Showtime" : "Add Showtime"}</h2>
+
+            <form className="showtime-form" onSubmit={handleSubmit}>
+                <div className="form-group">
+                    <label>Movie:</label>
                     <select
-                        style={input}
+                        className="showtime-input"
                         value={movieId}
                         onChange={(e) => setMovieId(e.target.value)}
                         required
@@ -129,10 +99,10 @@ const ShowtimeForm = ({ showtime = null, onSuccess }) => {
                     </select>
                 </div>
 
-                <div style={formGroup}>
-                    <label style={label}>Screen:</label>
+                <div className="form-group">
+                    <label>Screen:</label>
                     <select
-                        style={input}
+                        className="showtime-input"
                         value={screenId}
                         onChange={(e) => setScreenId(e.target.value)}
                         required
@@ -146,10 +116,10 @@ const ShowtimeForm = ({ showtime = null, onSuccess }) => {
                     </select>
                 </div>
 
-                <div style={formGroup}>
-                    <label style={label}>Start Time:</label>
+                <div className="form-group">
+                    <label>Start Time:</label>
                     <input
-                        style={input}
+                        className="showtime-input"
                         type="datetime-local"
                         value={startTime}
                         onChange={(e) => setStartTime(e.target.value)}
@@ -157,10 +127,10 @@ const ShowtimeForm = ({ showtime = null, onSuccess }) => {
                     />
                 </div>
 
-                <div style={formGroup}>
-                    <label style={label}>End Time:</label>
+                <div className="form-group">
+                    <label>End Time:</label>
                     <input
-                        style={input}
+                        className="showtime-input"
                         type="datetime-local"
                         value={endTime}
                         onChange={(e) => setEndTime(e.target.value)}
@@ -168,10 +138,10 @@ const ShowtimeForm = ({ showtime = null, onSuccess }) => {
                     />
                 </div>
 
-                <div style={formGroup}>
-                    <label style={label}>Language:</label>
+                <div className="form-group">
+                    <label>Language:</label>
                     <input
-                        style={input}
+                        className="showtime-input"
                         type="text"
                         value={language}
                         onChange={(e) => setLanguage(e.target.value)}
@@ -179,21 +149,21 @@ const ShowtimeForm = ({ showtime = null, onSuccess }) => {
                     />
                 </div>
 
-                <div style={formGroup}>
-                    <label style={label}>Available Seats:</label>
-                    <input
-                        style={input}
-                        type="number"
-                        min="1"
-                        value={availableSeats}
-                        onChange={(e) => setAvailableSeats(e.target.value)}
-                        required
-                    />
-                </div>
+                <div className="showtime-buttons">
+                    <button className="showtime-btn" type="submit">
+                        {showtime ? "Update Showtime" : "Create Showtime"}
+                    </button>
 
-                <button style={button} type="submit">
-                    {showtime ? "Update Showtime" : "Create Showtime"}
-                </button>
+                    {showtime && (
+                        <button
+                            type="button"
+                            className="cancel-btn"
+                            onClick={onCancel}
+                        >
+                            Cancel
+                        </button>
+                    )}
+                </div>
             </form>
         </div>
     );

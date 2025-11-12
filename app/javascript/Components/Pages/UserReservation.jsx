@@ -104,12 +104,8 @@ const UserReservation = ({ movieId }) => {
                             onClick={() => handleShowtimeClick(st)}
                         >
                             <p>Screen: {st.screen?.name || "Unknown Screen"}</p>
-                            {/*<p>*/}
-                            {/*    {formatDay(st.start_time)} | Seats Available:{" "}*/}
-                            {/*    {st.available_seats}*/}
-                            {/*</p>*/}
                             <p>
-                                {formatDay(st.start_time)} @ {formatTime(st.start_time)} | Seats Available: {st.available_seats}
+                                {formatDay(st.start_time)} @ {formatTime(st.start_time)}
                             </p>
 
                         </div>

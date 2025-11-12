@@ -30,12 +30,6 @@ Rails.application.routes.draw do
   resources :seats, only: [:create]
 
 
-  # resources :showtimes do
-  #   member do
-  #     get  :available_seats
-  #     post :book_seats
-  #   end
-  # end
   resources :showtimes do
     get :available_seats, on: :member
   end

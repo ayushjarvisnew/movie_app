@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../Css/MovieForm.css";
 
-const MovieForm = ({ movie = null, onSuccess }) => {
+const MovieForm = ({ movie = null, onSuccess, onCancel  }) => {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [posterImage, setPosterImage] = useState("");
@@ -75,6 +75,11 @@ const MovieForm = ({ movie = null, onSuccess }) => {
         setDuration(""); setRating(0); setSelectedTags([]); setNewTags([]); setNewTagInput("");
     };
 
+    const handleCancel = () => {
+        resetForm(); // ✅ Clear form
+        if (onCancel) onCancel(); // ✅ Notify parent to switch back to "create mode"
+    };
+
     return (
         <div className="movie-form-container">
             <h2 className="movie-form-title">{movie ? "Edit Movie" : "Add New Movie"}</h2>
@@ -117,7 +122,22 @@ const MovieForm = ({ movie = null, onSuccess }) => {
                     )}
                 </div>
 
-                <button type="submit" className="movie-submit-btn">{movie ? "Update Movie" : "Create Movie"}</button>
+                <div className="movie-form-buttons">
+                    <button type="submit" className="movie-submit-btn">
+                        {movie ? "Update Movie" : "Create Movie"}
+                    </button>
+
+                    {movie && (
+                        <button
+                            type="button"
+                            className="movie-cancel-btn"
+                            onClick={onCancel}
+                        >
+                            Cancel
+                        </button>
+                    )}
+                </div>
+
             </form>
         </div>
     );

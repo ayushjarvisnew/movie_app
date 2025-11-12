@@ -116,39 +116,23 @@ const UserDashboard = () => {
                         <th>Price</th>
                         <th>Status</th>
                         <th>Action</th>
+                        <th>Ticket</th>
                     </tr>
                     </thead>
                     <tbody>
+
                     {reservations.map((res) => (
                         <tr key={res.id}>
-                            <td>{res.movie_title || res.showtime?.movie?.title || "N/A"}</td>
-                            <td>{res.theatre_name || res.showtime?.screen?.theatre?.name || "N/A"}</td>
-                            <td>
-                                {res.showtime_time
-                                    ? new Date(res.showtime_time).toLocaleString("en-GB", {
-                                        day: "2-digit",
-                                        month: "short",
-                                        year: "numeric",
-                                        hour: "2-digit",
-                                        minute: "2-digit",
-                                    })
-                                    : "N/A"}
-                            </td>
-                            <td>
-                                {Array.isArray(res.seats)
-                                    ? res.seats
-                                        .map((seat) =>
-                                            typeof seat === "string" ? seat : `${seat.row}${seat.seat_number}`
-                                        )
-                                        .join(", ")
-                                    : "N/A"}
-                            </td>
+                            <td>{res.movie_title || "N/A"}</td>
+                            <td>{res.theatre_name || "N/A"}</td>
+                            <td>{res.showtime_time || "N/A"}</td>
+                            <td>{Array.isArray(res.seats) ? res.seats.join(", ") : "N/A"}</td>
                             <td>{res.total_amount ? `₹${res.total_amount}` : "N/A"}</td>
                             <td
                                 style={{
                                     color: res.cancelled
                                         ? "red"
-                                        : res.payment_status === "paid"
+                                        : res.payment_status === "success"
                                             ? "green"
                                             : "orange",
                                     fontWeight: "bold",
@@ -159,21 +143,23 @@ const UserDashboard = () => {
                             <td>
                                 {res.cancelled || new Date(res.showtime_time) < new Date() ? (
                                     "Past"
+                                ) : res.payment_status !== "success" ? (
+                                    <button
+                                        onClick={() => handleCancel(res.id, res.showtime_id)}
+                                        disabled={cancelling === res.id}
+                                    >
+                                        {cancelling === res.id ? "Cancelling..." : "Cancel"}
+                                    </button>
                                 ) : (
-                                    <>
-                                        {res.payment_status === "paid" ? (
-                                            <button onClick={() => handleDownload(res)}>
-                                                🎟️ Download
-                                            </button>
-                                        ) : (
-                                            <button
-                                                onClick={() => handleCancel(res.id, res.showtime_id)}
-                                                disabled={cancelling === res.id}
-                                            >
-                                                {cancelling === res.id ? "Cancelling..." : "Cancel"}
-                                            </button>
-                                        )}
-                                    </>
+                                    "-"
+                                )}
+                            </td>
+
+                            <td>
+                                {res.payment_status === "success" && !res.cancelled ? (
+                                    <button onClick={() => handleDownload(res)}>🎟️ Download Ticket</button>
+                                ) : (
+                                    "-"
                                 )}
                             </td>
                         </tr>

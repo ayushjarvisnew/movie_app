@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../Css/ScreenForm.css"; // ✅ Add this line
 
-const ScreenForm = ({ screen, onSuccess }) => {
+const ScreenForm = ({ screen, onSuccess,onCancel }) => {
     const [name, setName] = useState(screen?.name || "");
     const [totalSeats, setTotalSeats] = useState(screen?.seats || "");
     const [screenType, setScreenType] = useState(screen?.screen_type || "2D");
@@ -119,9 +119,29 @@ const ScreenForm = ({ screen, onSuccess }) => {
                     </select>
                 </div>
 
-                <button type="submit" disabled={loading} className="submit-btn">
-                    {loading ? "Saving..." : screen ? "Update Screen" : "Add Screen"}
-                </button>
+                {/*<button type="submit" disabled={loading} className="submit-btn">*/}
+                {/*    {loading ? "Saving..." : screen ? "Update Screen" : "Add Screen"}*/}
+                {/*</button>*/}
+                <div className="form-buttons">
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="submit-btn"
+                    >
+                        {loading ? "Saving..." : screen ? "Update Screen" : "Add Screen"}
+                    </button>
+
+                    {/* ✅ ADDED — Cancel button visible only in edit mode */}
+                    {screen && (
+                        <button
+                            type="button"
+                            className="cancel-btn"
+                            onClick={onCancel}
+                        >
+                            Cancel Edit
+                        </button>
+                    )}
+                </div>
             </form>
         </div>
     );

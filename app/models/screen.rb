@@ -1,5 +1,7 @@
 class Screen < ApplicationRecord
 
+  acts_as_paranoid
+
   belongs_to :theatre
   has_many :showtimes, dependent: :destroy
   has_many :seats, dependent: :destroy

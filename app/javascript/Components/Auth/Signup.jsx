@@ -55,7 +55,7 @@ const Signup = () => {
 
             localStorage.setItem("token", res.data.token);
             localStorage.setItem("user", JSON.stringify(res.data.user));
-
+            setUser(res.data.user);
             setMessage(`Signup successful! Welcome, ${res.data.user.name}`);
 
             setTimeout(() => {
