@@ -1,7 +1,7 @@
-import axios from "../../api/axios"; // relative path from auth/Login.jsx to js/api/axios.js
+// import axios from "../../api/axios"; // relative path from auth/Login.jsx to js/api/axios.js
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-// import axios from "axios";
+import axios from "axios";
 
 const Login = () => {
     const [email, setEmail] = useState("");
