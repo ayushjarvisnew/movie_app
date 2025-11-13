@@ -17,6 +17,7 @@ services:
     command: bash -c "bundle install && bin/dev"
     volumes:
       - .:/app
+      - bundle_cache:/usr/local/bundle
     ports:
       - "3000:3000"
     depends_on:

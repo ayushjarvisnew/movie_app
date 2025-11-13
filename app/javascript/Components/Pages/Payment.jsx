@@ -17,7 +17,7 @@ const Payment = () => {
         const initiatePayment = async () => {
             try {
                 const res = await axios.post(
-                    "http://localhost:3000/payments/initiate",
+                    "/payments/initiate",
                     {
                         showtime_id: booking.showtimeId,
                         seat_ids: booking.selectedSeats,
