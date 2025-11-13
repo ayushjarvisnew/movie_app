@@ -52,7 +52,7 @@ const Signup = () => {
                 password_confirmation: passwordConfirmation,
                 phone,
                 is_admin: isAdmin,
-            });
+            },{ withCredentials: true });
 
             localStorage.setItem("token", res.data.token);
             localStorage.setItem("user", JSON.stringify(res.data.user));

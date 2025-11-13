@@ -21,7 +21,7 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post("/login", { email, password });
+            const res = await axios.post("/login", { email, password },{ withCredentials: true });
             const { token, user } = res.data;
 
             localStorage.setItem("token", token);
