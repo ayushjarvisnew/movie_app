@@ -1,6 +1,9 @@
+version: "3.9"
+
 services:
   db:
     image: postgres:15
+    restart: always
     container_name: movie_db
     environment:
       POSTGRES_USER: postgres
@@ -24,10 +27,15 @@ services:
       - db
     environment:
       RAILS_ENV: development
+      DB_HOST: db
+      DB_USER: postgres
+      DB_PASSWORD: password
+      DB_NAME: movie_reservation_system_development
       DATABASE_URL: postgres://postgres:password@db:5432/movie_reservation_system
 
 volumes:
   postgres_data:
+  bundle_cache:
 
 networks:
   default:
