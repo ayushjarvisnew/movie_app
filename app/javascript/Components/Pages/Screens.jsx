@@ -11,7 +11,7 @@ const Screens = () => {
     const fetchScreens = async () => {
         setLoading(true);
         try {
-            const res = await axios.get("http://localhost:3000/screens", {
+            const res = await axios.get("/screens", {
                 headers: { Authorization: `Bearer ${token}` },
             });
             const data = Array.isArray(res.data) ? res.data : [];
@@ -35,7 +35,7 @@ const Screens = () => {
     const handleDelete = async (id) => {
         if (!window.confirm("Are you sure you want to delete this screen?")) return;
         try {
-            await axios.delete(`http://localhost:3000/screens/${id}`, {
+            await axios.delete(`/screens/${id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             fetchScreens();

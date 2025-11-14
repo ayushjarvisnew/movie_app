@@ -10,7 +10,7 @@ const ShowtimeList = () => {
 
     const fetchShowtimes = () => {
         axios
-            .get("http://localhost:3000/showtimes", {
+            .get("/showtimes", {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((res) => {

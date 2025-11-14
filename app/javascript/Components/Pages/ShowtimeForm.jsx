@@ -26,10 +26,10 @@ const ShowtimeForm = ({ showtime = null, onSuccess, onCancel }) => { // 🔹 Add
         const fetchData = async () => {
             try {
                 const [moviesRes, screensRes] = await Promise.all([
-                    axios.get("http://localhost:3000/api/movies", {
+                    axios.get("/api/movies", {
                         headers: { Authorization: `Bearer ${token}` },
                     }),
-                    axios.get("http://localhost:3000/screens", {
+                    axios.get("/screens", {
                         headers: { Authorization: `Bearer ${token}` },
                     }),
                 ]);

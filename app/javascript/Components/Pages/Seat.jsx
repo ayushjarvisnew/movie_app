@@ -7,7 +7,7 @@ const Seat = forwardRef(({ onEditSeat }, ref) => {
 
     const fetchSeats = () => {
         axios
-            .get("http://localhost:3000/seats", {
+            .get("/seats", {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((res) => {
@@ -28,7 +28,7 @@ const Seat = forwardRef(({ onEditSeat }, ref) => {
     const deleteSeat = (id) => {
         if (!window.confirm("Delete this seat?")) return;
         axios
-            .delete(`http://localhost:3000/seats/${id}`, {
+            .delete(`/seats/${id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then(fetchSeats)
