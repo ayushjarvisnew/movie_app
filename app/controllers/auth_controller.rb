@@ -7,11 +7,12 @@ class AuthController < ApplicationController
 
   def signup
     user = User.new(user_params)
-    user.save!
-    token = encode_token(user)
-    render json: { user: user_response(user), token: token }, status: :created
-  rescue => e
-    render json: { errors: e.message }, status: :unprocessable_entity
+    if user.save
+      token = encode_token(user)
+      render json: { user: user_response(user), token: token }, status: :created
+    else
+      render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 
   def login
