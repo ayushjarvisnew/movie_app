@@ -57,7 +57,7 @@ const MovieForm = ({ movie = null, onSuccess, onCancel  }) => {
             release_date: releaseDate, duration, rating,
             tag_ids: selectedTags, new_tags: newTags
         };
-        const url = movie ? `/api/movies/${movie.id}` : "/api/movies";
+        const url = movie ? `/api/movies/${movie.id}` : "/axios/movies";
         const method = movie ? "patch" : "post";
 
         axios({ method, url, data: { movie: payload }, headers: { Authorization: `Bearer ${token}` } })

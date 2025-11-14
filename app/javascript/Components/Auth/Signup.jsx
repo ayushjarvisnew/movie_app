@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
 const Signup = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
@@ -51,16 +50,12 @@ const Signup = () => {
                 password_confirmation: passwordConfirmation,
                 phone,
                 is_admin: isAdmin,
-            },
-      {
-                  headers: {
-                        "Content-Type": "application/json"
-                    }
+
             });
 
             localStorage.setItem("token", res.data.token);
             localStorage.setItem("user", JSON.stringify(res.data.user));
-            setUser(res.data.user);
+            // setUser(res.data.user);
             setMessage(`Signup successful! Welcome, ${res.data.user.name}`);
 
             setTimeout(() => {
@@ -68,9 +63,9 @@ const Signup = () => {
             }, 1500);
         } catch (err) {
             setMessage(
-                err.response?.data?.errors
-                    ? err.response.data.errors.join(", ")
-                    : "Signup failed. Please try again."
+                // err.response?.data?.errors
+                //     ? err.response.data.errors.join(", ") :
+                    "Signup failed. Please try again."
             );
         }
     };
