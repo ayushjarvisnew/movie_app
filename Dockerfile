@@ -72,11 +72,9 @@ ENV RACK_ENV=production
 ENV NODE_ENV=production
 ENV PORT=80
 
-# Precompile assets (important for Render)
-RUN bundle exec rails assets:precompile
 
 # Expose port
 EXPOSE 80
 
-# Run migrations on startup, then server
-CMD ["bash", "-c", "bundle exec rails db:prepare && bundle exec rails db:seed && bundle exec rails server -b 0.0.0.0 -p 80 -e production"]
+# Command for Render (production)
+CMD ["bash", "-c", "bundle exec rails db:prepare && bundle exec rails assets:precompile && bundle exec rails server -b 0.0.0.0 -p 80 -e production"]
