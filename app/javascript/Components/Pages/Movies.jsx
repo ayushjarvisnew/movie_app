@@ -16,7 +16,7 @@ const Movies = () => {
 
 
         axios
-            .get("http://localhost:3000/api/movies", {
+            .get("/api/movies", {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((res) => {
@@ -33,7 +33,7 @@ const Movies = () => {
 
 
         axios
-            .get("http://localhost:3000/api/upcoming_movies", {
+            .get("/api/upcoming_movies", {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((res) => Array.isArray(res.data) && setUpcomingMovies(res.data))
