@@ -51,6 +51,11 @@ const Signup = () => {
                 password_confirmation: passwordConfirmation,
                 phone,
                 is_admin: isAdmin,
+            },
+      {
+                  headers: {
+                        "Content-Type": "application/json"
+                    }
             });
 
             localStorage.setItem("token", res.data.token);
