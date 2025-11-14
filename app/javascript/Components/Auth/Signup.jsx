@@ -43,7 +43,7 @@ const Signup = () => {
         if (!validate()) return;
 
         try {
-            const res = await axios.post("/signup", {
+            const res = await axios.post("http://localhost:3000/signup", {
                 name,
                 email,
                 password,
