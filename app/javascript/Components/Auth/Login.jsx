@@ -1,4 +1,3 @@
-// import axios from "../../api/axios"; // relative path from auth/Login.jsx to js/api/axios.js
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -21,7 +20,7 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post("/login", { email, password },{ withCredentials: true });
+            const res = await axios.post("/login", { email, password });
             const { token, user } = res.data;
 
             localStorage.setItem("token", token);

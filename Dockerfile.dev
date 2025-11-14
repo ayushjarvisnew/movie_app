@@ -1,0 +1,25 @@
+FROM ruby:3.2
+
+WORKDIR /app
+
+# Install Node.js, Yarn, and PostgreSQL client
+RUN apt-get update -qq && \
+    apt-get install -y curl gnupg && \
+    curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs postgresql-client && \
+    corepack enable && \
+    corepack prepare yarn@stable --activate
+
+# Install Ruby gems first
+COPY Gemfile Gemfile.lock ./
+RUN bundle install
+
+# Install JS dependencies
+COPY package.json yarn.lock ./
+RUN yarn install
+
+# Copy all app code
+COPY . .
+
+# Start dev server
+CMD ["bash", "-c", "bin/dev"]

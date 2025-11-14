@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import axios from "axios";
-// import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
@@ -52,7 +51,7 @@ const Signup = () => {
                 password_confirmation: passwordConfirmation,
                 phone,
                 is_admin: isAdmin,
-            },{ withCredentials: true });
+            });
 
             localStorage.setItem("token", res.data.token);
             localStorage.setItem("user", JSON.stringify(res.data.user));

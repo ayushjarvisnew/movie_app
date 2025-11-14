@@ -9,9 +9,7 @@ default: &default
 development:
   <<: *default
   database: <%= ENV.fetch("DB_NAME", "movie_reservation_system_development") %>
-  host: db
-  username: postgres
-  password: password
+
 test:
   <<: *default
   database: movie_reservation_system_test
