@@ -38,35 +38,66 @@ const Signup = () => {
         return true;
     };
 
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+    //     if (!validate()) return;
+    //
+    //     try {
+    //         const res = await axios.post("/signup", {
+    //             name,
+    //             email,
+    //             password,
+    //             password_confirmation: passwordConfirmation,
+    //             phone,
+    //             is_admin: isAdmin,
+    //
+    //         });
+    //
+    //         localStorage.setItem("token", res.data.token);
+    //         localStorage.setItem("user", JSON.stringify(res.data.user));
+    //         // setUser(res.data.user);
+    //         setMessage(`Signup successful! Welcome, ${res.data.user.name}`);
+    //
+    //         setTimeout(() => {
+    //             navigate("/");
+    //         }, 1500);
+    //     } catch (err) {
+    //         setMessage(
+    //             // err.response?.data?.errors
+    //             //     ? err.response.data.errors.join(", ") :
+    //                 "Signup failed. Please try again."
+    //         );
+    //     }
+    // };
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!validate()) return;
 
         try {
-            const res = await axios.post("/signup", {
+            const body = {
                 name,
                 email,
                 password,
                 password_confirmation: passwordConfirmation,
                 phone,
-                is_admin: isAdmin,
+                is_admin: isAdmin ? "true" : "false",  // IMPORTANT FIX
+            };
 
+            const res = await axios.post("/signup", body, {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                },
             });
 
             localStorage.setItem("token", res.data.token);
             localStorage.setItem("user", JSON.stringify(res.data.user));
-            // setUser(res.data.user);
             setMessage(`Signup successful! Welcome, ${res.data.user.name}`);
 
-            setTimeout(() => {
-                navigate("/");
-            }, 1500);
+            setTimeout(() => navigate("/"), 1500);
         } catch (err) {
-            setMessage(
-                // err.response?.data?.errors
-                //     ? err.response.data.errors.join(", ") :
-                    "Signup failed. Please try again."
-            );
+            console.log("Signup error:", err?.response);
+            setMessage("Signup failed. Please try again.");
         }
     };
 
