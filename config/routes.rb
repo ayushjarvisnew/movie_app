@@ -4,13 +4,22 @@ Rails.application.routes.draw do
   post '/login', to: 'auth#login'
   get '/current_user', to: 'auth#current_user'
 
-  get    'axios/movies',     to: 'movies#index'
-  get    'axios/movies/:id', to: 'movies#show'
-  post   'axios/movies',     to: 'movies#create'
-  patch  'axios/movies/:id', to: 'movies#update'
-  delete 'axios/movies/:id', to: 'movies#destroy'
+  # get    'axios/movies',     to: 'movies#index'
+  # get    'axios/movies/:id', to: 'movies#show'
+  # post   'axios/movies',     to: 'movies#create'
+  # patch  'axios/movies/:id', to: 'movies#update'
+  # delete 'axios/movies/:id', to: 'movies#destroy'
+  #
+  # get    'axios/upcoming_movies', to: 'movies#upcoming_movies'
 
-  get    'axios/upcoming_movies', to: 'movies#upcoming_movies'
+  # ---------- MOVIES (api) ----------
+  get    'api/movies',         to: 'movies#index'
+  get    'api/movies/:id',     to: 'movies#show'
+  post   'api/movies',         to: 'movies#create'
+  patch  'api/movies/:id',     to: 'movies#update'
+  delete 'api/movies/:id',     to: 'movies#destroy'
+
+  get    'api/upcoming_movies', to: 'movies#upcoming_movies'
 
 
   resources :users, only: [:index, :show, :create, :update, :destroy] do
@@ -47,7 +56,9 @@ Rails.application.routes.draw do
   root 'home#index'
   get '*path', to: 'home#index', constraints: ->(req) { !req.xhr? && req.format.html? }
 
-  get '/axios/info', to: 'home#api_status'
+  # get '/axios/info', to: 'home#api_status'
+  # ---------- SYSTEM STATUS ----------
+  get '/api/info', to: 'home#api_status'
 
   post "/payments/initiate", to: "payments#initiate"
   post "/payment-success", to: "payments#success"
