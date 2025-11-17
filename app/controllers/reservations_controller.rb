@@ -61,31 +61,67 @@ class ReservationsController < ApplicationController
   end
 
 
-  def destroy
-    if @reservation.showtime.nil?
+  # def destroy
+  #   if @reservation.showtime.nil?
+  #
+  #     @reservation.destroy
+  #     return render json: { message: "Reservation soft-deleted (showtime missing)" }
+  #   end
+  #
+  #   if @reservation.showtime.start_time > Time.current
+  #     ActiveRecord::Base.transaction do
+  #
+  #       ShowtimeSeat.where(
+  #         showtime_id: @reservation.showtime_id,
+  #         seat_id: @reservation.seat_ids
+  #       ).update_all(available: true)
+  #
+  #       @reservation.showtime.update_available_seats!
+  #
+  #       @reservation.destroy
+  #     end
+  #     render json: { message: "Reservation cancelled successfully" }
+  #   else
+  #     render json: { error: "Cannot cancel past reservations" }, status: :forbidden
+  #   end
+  # end
 
+  def destroy
+    # 1️⃣ If reservation does not have a showtime
+    if @reservation.showtime.nil?
       @reservation.destroy
       return render json: { message: "Reservation soft-deleted (showtime missing)" }
     end
 
-    if @reservation.showtime.start_time > Time.current
-      ActiveRecord::Base.transaction do
-
-        ShowtimeSeat.where(
-          showtime_id: @reservation.showtime_id,
-          seat_id: @reservation.seat_ids
-        ).update_all(available: true)
-
-        @reservation.showtime.update_available_seats!
-
-        @reservation.destroy
-      end
-      render json: { message: "Reservation cancelled successfully" }
-    else
-      render json: { error: "Cannot cancel past reservations" }, status: :forbidden
+    # 2️⃣ Past showtime cannot be cancelled
+    if @reservation.showtime.start_time < Time.current
+      return render json: { error: "Cannot cancel past reservations" }, status: :forbidden
     end
-  end
 
+    # 3️⃣ Already cancelled?
+    if @reservation.deleted_at.present?
+      return render json: { error: "Reservation already cancelled" }, status: :unprocessable_entity
+    end
+
+    # 4️⃣ Payment must be successful to allow cancel
+    if @reservation.payment_status != "success"
+      return render json: { error: "Cannot cancel unpaid reservation" }, status: :unprocessable_entity
+    end
+
+    # 5️⃣ Perform cancellation + restore seat availability
+    ActiveRecord::Base.transaction do
+      ShowtimeSeat.where(
+        showtime_id: @reservation.showtime_id,
+        seat_id: @reservation.seat_ids
+      ).update_all(available: true)
+
+      @reservation.showtime.update_available_seats!
+
+      @reservation.destroy  # soft delete
+    end
+
+    render json: { message: "Reservation cancelled successfully" }
+  end
 
 
   def restore
