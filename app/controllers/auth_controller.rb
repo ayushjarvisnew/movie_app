@@ -1,6 +1,6 @@
 class AuthController < ApplicationController
   before_action :authorize_request, only: [:current_user]
-  skip_forgery_protection
+  # skip_forgery_protection
   def current_user
     render json: @current_user ? { user: user_response(@current_user) } : { user: nil }
   end
