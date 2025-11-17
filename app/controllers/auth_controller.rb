@@ -28,7 +28,7 @@ class AuthController < ApplicationController
   private
 
   def user_params
-    params.permit(:name, :email, :password, :password_confirmation, :phone, :is_admin)
+    params.permit(:name, :email, :password, :password_confirmation, :phone)
   end
 
   def user_response(user)
