@@ -11,9 +11,10 @@ const formatDay = (dateStr) => {
         year: "numeric",
     });
 };
+
 const formatTime = (dateStr) => {
     const date = new Date(dateStr);
-    return date.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit' });
+    return date.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
 };
 
 const UserReservation = ({ movieId }) => {
@@ -21,20 +22,25 @@ const UserReservation = ({ movieId }) => {
     const [showtimes, setShowtimes] = useState([]);
     const [selectedShowtime, setSelectedShowtime] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const token = localStorage.getItem("token");
+
+    const [loading, setLoading] = useState(false);
 
     const fetchShowtimes = async () => {
         if (!date) return;
+
+        setLoading(true);
+
         try {
             const res = await axios.get(
                 `/showtimes?movie_id=${movieId}&date=${date}`
             );
-            console.log("Showtimes response:", res.data);
             setShowtimes(res.data);
             setSelectedShowtime(null);
         } catch (err) {
             console.error(err);
             alert("Failed to load showtimes.");
+        } finally {
+            setLoading(false); // ⭐ NEW
         }
     };
 
@@ -61,7 +67,7 @@ const UserReservation = ({ movieId }) => {
                 🎬 Book Your Movie
             </h2>
 
-
+            {/* DATE PICKER */}
             <div style={{ marginBottom: "20px" }}>
                 <label style={{ fontWeight: "bold" }}>Select Date:</label>
                 <input
@@ -78,41 +84,54 @@ const UserReservation = ({ movieId }) => {
                 />
             </div>
 
-            {Object.keys(showtimesByTheatre).length === 0 && date && (
-                <p style={{ textAlign: "center", color: "red" }}>
-                    No showtimes available for this date.
+
+            {loading && (
+                <p style={{ textAlign: "center", color: "blue" }}>
+                    Loading showtimes...
                 </p>
             )}
 
-            {Object.entries(showtimesByTheatre).map(([theatreName, sts]) => (
-                <div key={theatreName} style={{ marginBottom: "20px" }}>
-                    <h3 style={{ borderBottom: "1px solid #ccc", paddingBottom: "5px" }}>
-                        {theatreName}
-                    </h3>
-                    {sts.map((st) => (
-                        <div
-                            key={st.id}
-                            style={{
-                                border: "1px solid #ccc",
-                                borderRadius: "8px",
-                                padding: "12px",
-                                marginBottom: "12px",
-                                backgroundColor:
-                                    selectedShowtime?.id === st.id ? "#f0f8ff" : "#fff",
-                                cursor: st.available_seats > 0 ? "pointer" : "not-allowed",
-                                opacity: st.available_seats === 0 ? 0.6 : 1,
-                            }}
-                            onClick={() => handleShowtimeClick(st)}
-                        >
-                            <p>Screen: {st.screen?.name || "Unknown Screen"}</p>
-                            <p>
-                                {formatDay(st.start_time)} @ {formatTime(st.start_time)}
-                            </p>
 
-                        </div>
-                    ))}
-                </div>
-            ))}
+            {!loading &&
+                date &&
+                Object.keys(showtimesByTheatre).length === 0 && (
+                    <p style={{ textAlign: "center", color: "red" }}>
+                        No showtimes available for this date.
+                    </p>
+                )}
+
+
+            {!loading &&
+                Object.entries(showtimesByTheatre).map(([theatreName, sts]) => (
+                    <div key={theatreName} style={{ marginBottom: "20px" }}>
+                        <h3
+                            style={{ borderBottom: "1px solid #ccc", paddingBottom: "5px" }}
+                        >
+                            {theatreName}
+                        </h3>
+                        {sts.map((st) => (
+                            <div
+                                key={st.id}
+                                style={{
+                                    border: "1px solid #ccc",
+                                    borderRadius: "8px",
+                                    padding: "12px",
+                                    marginBottom: "12px",
+                                    backgroundColor:
+                                        selectedShowtime?.id === st.id ? "#f0f8ff" : "#fff",
+                                    cursor: st.available_seats > 0 ? "pointer" : "not-allowed",
+                                    opacity: st.available_seats === 0 ? 0.6 : 1,
+                                }}
+                                onClick={() => handleShowtimeClick(st)}
+                            >
+                                <p>Screen: {st.screen?.name || "Unknown Screen"}</p>
+                                <p>
+                                    {formatDay(st.start_time)} @ {formatTime(st.start_time)}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                ))}
 
 
             {showModal && selectedShowtime && (
@@ -124,4 +143,5 @@ const UserReservation = ({ movieId }) => {
         </div>
     );
 };
+
 export default UserReservation;
