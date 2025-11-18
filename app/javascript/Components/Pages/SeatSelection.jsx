@@ -43,9 +43,24 @@ const SeatSelection = ({ showtime, onClose }) => {
 
     const toggleSeat = (seat) => {
         if (!seat.available) return;
-        setSelectedSeats((prev) =>
-            prev.includes(seat.id) ? prev.filter((id) => id !== seat.id) : [...prev, seat.id]
-        );
+        // setSelectedSeats((prev) =>
+        //     prev.includes(seat.id) ? prev.filter((id) => id !== seat.id) : [...prev, seat.id]
+        // );
+        setSelectedSeats((prev) => {
+            // If seat is already selected → unselect
+            if (prev.includes(seat.id)) {
+                return prev.filter((id) => id !== seat.id);
+            }
+
+            // ⛔ LIMIT ADDED: Allow max 5 seats
+            if (prev.length >= 5) {
+                alert("You can book only 5 seats at a time");
+                return prev; // Do not allow adding more
+            }
+
+            // Add the new seat
+            return [...prev, seat.id];
+        });
     };
 
     if (!showtime) return null;
@@ -67,6 +82,10 @@ const SeatSelection = ({ showtime, onClose }) => {
     const handlePayAndBook = () => {
         if (selectedSeats.length === 0) {
             alert("Select at least one seat.");
+            return;
+        }
+        if (selectedSeats.length > 5) {
+            alert("You can book only 5 seats at a time.");
             return;
         }
 

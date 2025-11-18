@@ -140,20 +140,6 @@ const UserDashboard = () => {
                             >
                                 {res.cancelled ? "Cancelled" : res.payment_status || "N/A"}
                             </td>
-                            {/*<td>*/}
-                            {/*    {res.cancelled || new Date(res.showtime_time) < new Date() ? (*/}
-                            {/*        "Past"*/}
-                            {/*    ) : res.payment_status !== "success" ? (*/}
-                            {/*        <button*/}
-                            {/*            onClick={() => handleCancel(res.id, res.showtime_id)}*/}
-                            {/*            disabled={cancelling === res.id}*/}
-                            {/*        >*/}
-                            {/*            {cancelling === res.id ? "Cancelling..." : "Cancel"}*/}
-                            {/*        </button>*/}
-                            {/*    ) : (*/}
-                            {/*        "-"*/}
-                            {/*    )}*/}
-                            {/*</td>*/}
                             <td>
                                 {/* 1. If the showtime is already over → Past */}
                                 {new Date(res.showtime_time) < new Date() ? (

@@ -14,6 +14,12 @@ class ReservationsController < ApplicationController
     return render json: { error: "Showtime not found" }, status: :not_found unless showtime
     return render json: { error: "Select at least one seat" }, status: :unprocessable_entity if seat_ids.empty?
 
+    # ⛔ LIMIT ADDED HERE — A user can book only 5 tickets per booking
+    if seat_ids.length > 5
+      return render json: { error: "You can book only 5 seats at a time" }, status: :forbidden
+    end
+    # ⛔ END LIMIT
+
     showtime_seats = ShowtimeSeat.where(showtime_id: showtime.id, seat_id: seat_ids, available: true)
     if showtime_seats.size != seat_ids.size
       return render json: { error: "Some selected seats are not available" }, status: :unprocessable_entity
@@ -59,32 +65,6 @@ class ReservationsController < ApplicationController
 
     render json: reservations.map { |r| format_reservation(r, include_user: @current_user.is_admin) }
   end
-
-
-  # def destroy
-  #   if @reservation.showtime.nil?
-  #
-  #     @reservation.destroy
-  #     return render json: { message: "Reservation soft-deleted (showtime missing)" }
-  #   end
-  #
-  #   if @reservation.showtime.start_time > Time.current
-  #     ActiveRecord::Base.transaction do
-  #
-  #       ShowtimeSeat.where(
-  #         showtime_id: @reservation.showtime_id,
-  #         seat_id: @reservation.seat_ids
-  #       ).update_all(available: true)
-  #
-  #       @reservation.showtime.update_available_seats!
-  #
-  #       @reservation.destroy
-  #     end
-  #     render json: { message: "Reservation cancelled successfully" }
-  #   else
-  #     render json: { error: "Cannot cancel past reservations" }, status: :forbidden
-  #   end
-  # end
 
   def destroy
     # 1️⃣ If reservation does not have a showtime

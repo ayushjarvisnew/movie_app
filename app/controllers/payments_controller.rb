@@ -81,25 +81,28 @@ class PaymentsController < ApplicationController
     render json: { error: e.message, backtrace: e.backtrace }, status: :internal_server_error
   end
 
+
   def success
     txnid = params[:txnid]
     status = params[:status]
     reservation = Reservation.find_by(txnid: txnid)
 
-    base_url =
-      if Rails.env.production?
-        "https://movie-app-3cv5.onrender.com"
-      else
-        "http://localhost:3000"
-      end
+    return render json: { error: "Invalid transaction" }, status: :not_found unless reservation
 
-    if reservation && status == "success"
+    base_url = Rails.env.production? ?
+                 "https://movie-app-3cv5.onrender.com" :
+                 "http://localhost:3000"
+
+    if status == "success"
       reservation.update(payment_status: "success")
       ShowtimeSeat.where(showtime_id: reservation.showtime_id, seat_id: reservation.seats.pluck(:id))
                   .update_all(available: false)
 
       respond_to do |format|
-        format.html { redirect_to "#{base_url}/payments/success?txnid=#{txnid}&status=success" }
+        format.html do
+          redirect_to "#{base_url}/payments/success?txnid=#{txnid}&status=success"
+        end
+
         format.json do
           render json: {
             booking: {
@@ -124,16 +127,14 @@ class PaymentsController < ApplicationController
   def failure
     txnid = params[:txnid]
     reservation = Reservation.find_by(txnid: txnid)
+
     reservation&.update(payment_status: "failed")
     ShowtimeSeat.where(showtime_id: reservation.showtime_id, seat_id: reservation.seats.pluck(:id))
                 .update_all(available: true) if reservation
 
-    base_url =
-      if Rails.env.production?
-        "https://movie-app-3cv5.onrender.com"
-      else
-        "http://localhost:3000"
-      end
+    base_url = Rails.env.production? ?
+                 "https://movie-app-3cv5.onrender.com" :
+                 "http://localhost:3000"
 
     redirect_to "#{base_url}/payments/failure?txnid=#{txnid}&status=failure"
   end

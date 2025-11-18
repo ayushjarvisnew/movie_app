@@ -29,7 +29,7 @@ const ShowtimeList = () => {
     const handleDelete = (id) => {
         if (!window.confirm("Are you sure?")) return;
         axios
-            .delete(`http://localhost:3000/showtimes/${id}`, {
+            .delete(`/showtimes/${id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then(() => fetchShowtimes())

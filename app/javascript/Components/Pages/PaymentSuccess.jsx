@@ -1,3 +1,5 @@
+
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import jsPDF from "jspdf";
@@ -14,13 +16,30 @@ const PaymentSuccess = () => {
     const status = new URLSearchParams(window.location.search).get("status");
 
     useEffect(() => {
+
+        // 🔥 NEW: check if token exists
+        const token = localStorage.getItem("token");
+        if (!token) {
+            setError("User not logged in.");
+            navigate("/login");
+            return;
+        }
+
         if (!txnid) {
             setError("No transaction ID found in URL.");
             setLoading(false);
             return;
         }
 
-        axios.get(`/payments/success.json`, { params: { txnid, status } })
+        axios
+            .get(`/payments/success.json`, {
+                params: { txnid, status },
+
+                // 🔥 NEW: send Authorization header
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
 
             .then((res) => {
                 if (res.data.booking) {
@@ -31,10 +50,17 @@ const PaymentSuccess = () => {
             })
             .catch((err) => {
                 console.error("Error fetching booking:", err);
-                setError("Could not load booking details.");
+
+                // 🔥 NEW: handle backend unauthorized response
+                if (err.response?.status === 401) {
+                    setError("Unauthorized access.");
+                    navigate("/login");
+                } else {
+                    setError("Could not load booking details.");
+                }
             })
             .finally(() => setLoading(false));
-    }, [txnid, status]);
+    }, [txnid, status, navigate]);
 
     const handleDownloadTicket = () => {
         if (!booking) return;
@@ -43,7 +69,6 @@ const PaymentSuccess = () => {
         doc.text("🎟️ Movie Ticket", 14, 20);
         doc.setFontSize(12);
         doc.text(`Transaction ID: ${booking.txnid}`, 14, 35);
-        console.log("autoTable:", typeof doc.autoTable);
         doc.autoTable({
             startY: 45,
             head: [["Field", "Details"]],

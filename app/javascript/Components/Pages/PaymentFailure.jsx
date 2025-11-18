@@ -1,15 +1,57 @@
-import React,{ useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const PaymentFailure = () => {
     const [txnid, setTxnid] = useState("");
+    const [error, setError] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
+
+        // 🔥 NEW: Check token
+        const token = localStorage.getItem("token");
+        if (!token) {
+            setError("User not logged in.");
+            navigate("/login");
+            return;
+        }
+
         const params = new URLSearchParams(window.location.search);
         const id = params.get("txnid");
-        setTxnid(id || "N/A");
-    }, []);
+        const status = params.get("status");
+
+        if (!id) {
+            setError("Invalid transaction.");
+            return;
+        }
+
+        // 🔥 NEW: Secure check — verify this txn belongs to logged-in user
+        axios
+            .get(`/payments/failure.json`, {
+                params: { txnid: id, status },
+                headers: {
+                    Authorization: `Bearer ${token}`, // send JWT
+                },
+            })
+            .then(() => {
+                setTxnid(id);
+            })
+            .catch((err) => {
+                console.error("Error:", err);
+
+                if (err.response?.status === 401) {
+                    setError("Unauthorized access.");
+                    navigate("/login");
+                } else {
+                    setError("Could not verify transaction.");
+                }
+            });
+    }, [navigate]);
+
+    if (error) {
+        return <p style={{ color: "red", textAlign: "center" }}>{error}</p>;
+    }
 
     return (
         <div
@@ -27,13 +69,11 @@ const PaymentFailure = () => {
             <h2 style={{ color: "#d32f2f" }}>❌ Payment Failed</h2>
             <h3 style={{ marginBottom: "20px" }}>We couldn’t process your payment.</h3>
 
-            <p>
-                <strong>Transaction ID:</strong> {txnid}
-            </p>
+            <p><strong>Transaction ID:</strong> {txnid}</p>
 
             <p style={{ color: "#555", marginTop: "15px" }}>
-                Don’t worry — sometimes this happens due to a timeout or network issue.
-                You can try again or check your booking history later.
+                Don’t worry — sometimes this happens due to a network issue or timeout.
+                You can try again or check your bookings later.
             </p>
 
             <div

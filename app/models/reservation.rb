@@ -10,6 +10,8 @@ class Reservation < ApplicationRecord
   validates :payment_status, presence: true
   validates :total_amount, numericality: { greater_than_or_equal_to: 0 }
 
+  validate :showtime_cannot_be_in_the_past, on: :create
+
   scope :active, -> { where(deleted_at: nil)}
   scope :expired_pending, -> { where(payment_status: "pending").where("created_at < ?", 15.minutes.ago) }
 
@@ -22,6 +24,13 @@ class Reservation < ApplicationRecord
 
   def restore
     update(deleted_at: nil)
+  end
+  private
+
+  def showtime_cannot_be_in_the_past
+    if showtime && showtime.start_time < Time.current
+      errors.add(:showtime, "cannot be in the past")
+    end
   end
 end
 
