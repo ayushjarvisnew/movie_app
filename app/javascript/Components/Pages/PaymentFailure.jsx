@@ -9,7 +9,6 @@ const PaymentFailure = () => {
 
     useEffect(() => {
 
-        // 🔥 NEW: Check token
         const token = localStorage.getItem("token");
         if (!token) {
             setError("User not logged in.");
@@ -26,12 +25,11 @@ const PaymentFailure = () => {
             return;
         }
 
-        // 🔥 NEW: Secure check — verify this txn belongs to logged-in user
         axios
             .get(`/payments/failure.json`, {
                 params: { txnid: id, status },
                 headers: {
-                    Authorization: `Bearer ${token}`, // send JWT
+                    Authorization: `Bearer ${token}`,
                 },
             })
             .then(() => {

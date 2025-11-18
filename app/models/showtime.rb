@@ -24,7 +24,6 @@ class Showtime < ApplicationRecord
 
 
 
-  # ✅ Update available seats using ShowtimeSeats now
   def update_available_seats!
     booked_seats = showtime_seats.where(available: false).count
     update!(available_seats: screen.total_seats - booked_seats)

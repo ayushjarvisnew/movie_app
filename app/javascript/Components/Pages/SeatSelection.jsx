@@ -43,22 +43,16 @@ const SeatSelection = ({ showtime, onClose }) => {
 
     const toggleSeat = (seat) => {
         if (!seat.available) return;
-        // setSelectedSeats((prev) =>
-        //     prev.includes(seat.id) ? prev.filter((id) => id !== seat.id) : [...prev, seat.id]
-        // );
         setSelectedSeats((prev) => {
             // If seat is already selected → unselect
             if (prev.includes(seat.id)) {
                 return prev.filter((id) => id !== seat.id);
             }
 
-            // ⛔ LIMIT ADDED: Allow max 5 seats
             if (prev.length >= 5) {
                 alert("You can book only 5 seats at a time");
-                return prev; // Do not allow adding more
+                return prev;
             }
-
-            // Add the new seat
             return [...prev, seat.id];
         });
     };
@@ -88,8 +82,6 @@ const SeatSelection = ({ showtime, onClose }) => {
             alert("You can book only 5 seats at a time.");
             return;
         }
-
-        // Save selection to localStorage
         localStorage.setItem(
             "pendingBooking",
             JSON.stringify({

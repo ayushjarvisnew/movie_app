@@ -4,30 +4,14 @@ class ShowtimesController < ApplicationController
   before_action :set_showtime, only: [:show, :available_seats, :book_seats, :update, :destroy]
 
 
-  # def index
-  #   showtimes = Showtime.includes(:movie, :screen).active
-  #   showtimes = showtimes.where(movie_id: params[:movie_id]) if params[:movie_id].present?
-  #
-  #   if params[:date].present?
-  #     date = params[:date].to_date
-  #     showtimes = showtimes.where(start_time: date.beginning_of_day..date.end_of_day)
-  #   end
-  #
-  #   render json: showtimes.map { |st| showtime_json(st) }
-  # end
-
   def index
     showtimes = Showtime.includes(:movie, :screen).active
-
-    # Filter by movie if provided
     showtimes = showtimes.where(movie_id: params[:movie_id]) if params[:movie_id].present?
 
-    # Filter by date if provided
     if params[:date].present?
       date = params[:date].to_date
       showtimes = showtimes.where(start_time: date.beginning_of_day..date.end_of_day)
     else
-      # If no date filter, only show future showtimes
       showtimes = showtimes.where("start_time >= ?", Time.current)
     end
 

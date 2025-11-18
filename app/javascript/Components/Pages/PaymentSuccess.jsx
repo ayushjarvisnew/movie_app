@@ -1,5 +1,3 @@
-
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import jsPDF from "jspdf";
@@ -17,7 +15,6 @@ const PaymentSuccess = () => {
 
     useEffect(() => {
 
-        // 🔥 NEW: check if token exists
         const token = localStorage.getItem("token");
         if (!token) {
             setError("User not logged in.");
@@ -34,8 +31,6 @@ const PaymentSuccess = () => {
         axios
             .get(`/payments/success.json`, {
                 params: { txnid, status },
-
-                // 🔥 NEW: send Authorization header
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -51,7 +46,6 @@ const PaymentSuccess = () => {
             .catch((err) => {
                 console.error("Error fetching booking:", err);
 
-                // 🔥 NEW: handle backend unauthorized response
                 if (err.response?.status === 401) {
                     setError("Unauthorized access.");
                     navigate("/login");

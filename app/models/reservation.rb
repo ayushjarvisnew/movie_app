@@ -18,13 +18,7 @@ class Reservation < ApplicationRecord
   def self.cleanup_expired
     expired_pending.find_each(&:destroy)
   end
-  def soft_delete
-    update(deleted_at: Time.current)
-  end
 
-  def restore
-    update(deleted_at: nil)
-  end
   private
 
   def showtime_cannot_be_in_the_past
