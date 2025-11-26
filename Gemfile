@@ -78,7 +78,7 @@ end
 gem 'prawn'
 
 
-gem 'acts_as_paranoid', '~> 0.10.0'
+gem 'acts_as_paranoid', '~> 0.11.0'
 
 group :development, :test do
   gem 'rspec-rails', '~> 7.0'
