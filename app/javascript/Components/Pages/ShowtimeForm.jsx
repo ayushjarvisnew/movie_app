@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../Css/Showtime.css"; // ✅ External CSS
 
-const ShowtimeForm = ({ showtime = null, onSuccess, onCancel }) => { // 🔹 Added onCancel prop
+const ShowtimeForm = ({ showtime = null, onSuccess, onCancel }) => {
     const token = localStorage.getItem("token");
 
     const formatDateTimeLocal = (isoString) => {
@@ -143,6 +143,7 @@ const ShowtimeForm = ({ showtime = null, onSuccess, onCancel }) => { // 🔹 Add
                     <input
                         className="showtime-input"
                         type="text"
+                        placeholder="Language"
                         value={language}
                         onChange={(e) => setLanguage(e.target.value)}
                         required

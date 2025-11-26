@@ -29,7 +29,7 @@ const Screens = () => {
 
     const handleEdit = (screen) => {
         setSelectedScreen(screen);
-        window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll to form
+        window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     const handleDelete = async (id) => {

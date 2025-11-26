@@ -62,7 +62,7 @@ const UserDashboard = () => {
         }
     };
 
-    // 🎟️ Download ticket as PDF
+
     const handleDownload = (res) => {
         const doc = new jsPDF();
         doc.setFontSize(18);
@@ -99,10 +99,10 @@ const UserDashboard = () => {
     if (!user) return <p>Please login to see your dashboard.</p>;
 
     return (
-        <div style={{ padding: "20px" }}>
-            <h2>Welcome, {user.name}</h2>
+        <div style={{ padding: "20px" ,background:"black",color:"white" }}>
+            <h1 style={{color:"orange"}}>Welcome {user.name}</h1>
 
-            <h3>Your Reservations:</h3>
+            <h2>Your Reservations:</h2>
             {reservations.length === 0 ? (
                 <p>No reservations yet.</p>
             ) : (
@@ -157,13 +157,8 @@ const UserDashboard = () => {
                                             >
                                                 {cancelling === res.id ? "Cancelling..." : "Cancel"}
                                             </button>
-                                        ) : (
-                                            /* 4. Payment not success → no cancel option */
-                                            "-"
-                                        )}
+                                        ) : ("-")}
                             </td>
-
-
                             <td>
                                 {res.payment_status === "success" && !res.cancelled ? (
                                     <button onClick={() => handleDownload(res)}>🎟️ Download Ticket</button>

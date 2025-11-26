@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "../Css/ScreenForm.css"; // ✅ Add this line
+import "../Css/ScreenForm.css";
 
 const ScreenForm = ({ screen, onSuccess,onCancel }) => {
     const [name, setName] = useState(screen?.name || "");
@@ -119,9 +119,6 @@ const ScreenForm = ({ screen, onSuccess,onCancel }) => {
                     </select>
                 </div>
 
-                {/*<button type="submit" disabled={loading} className="submit-btn">*/}
-                {/*    {loading ? "Saving..." : screen ? "Update Screen" : "Add Screen"}*/}
-                {/*</button>*/}
                 <div className="form-buttons">
                     <button
                         type="submit"
@@ -131,7 +128,6 @@ const ScreenForm = ({ screen, onSuccess,onCancel }) => {
                         {loading ? "Saving..." : screen ? "Update Screen" : "Add Screen"}
                     </button>
 
-                    {/* ✅ ADDED — Cancel button visible only in edit mode */}
                     {screen && (
                         <button
                             type="button"

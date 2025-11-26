@@ -12,8 +12,7 @@
 }
 
 .showtime-form-section {
-    /*background: #ffffff;*/
-    background: #f9fcff;
+    background: rgba(255, 255, 255, 0.15);
     padding: 25px 30px;
     border-radius: 14px;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
@@ -25,7 +24,6 @@
 }
 .showtime-form-section h2 {
     text-align: center;
-    color: #007bff;
     margin-bottom: 20px;
     font-weight: 700;
     letter-spacing: 0.3px;
@@ -111,7 +109,6 @@
     transform: translateY(-1px);
 }
 
-/* 🪟 Scrollbar for wide tables */
 .table-wrapper::-webkit-scrollbar {
     height: 8px;
 }

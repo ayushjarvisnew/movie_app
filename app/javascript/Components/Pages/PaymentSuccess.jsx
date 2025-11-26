@@ -86,15 +86,16 @@ const PaymentSuccess = () => {
                 maxWidth: "600px",
                 margin: "50px auto",
                 padding: "30px",
-                backgroundColor: "#ffffff",
+                backgroundColor: "black",
+                color:"white",
                 boxShadow: "0 0 15px rgba(0,0,0,0.2)",
                 borderRadius: "12px",
                 textAlign: "center",
                 fontFamily: "Arial, sans-serif",
             }}
         >
-            <h2 style={{ color: "#2e7d32" }}>🎉 Payment Successful!</h2>
-            <h3 style={{ marginBottom: "20px" }}>Your Booking is Confirmed</h3>
+            <h2 style={{ color: "#ffcc00" }}>🎉 Payment Successful!</h2>
+            <h3 style={{ marginBottom: "20px",color:"orange" }}>Your Booking is Confirmed</h3>
 
             <p><strong>Transaction ID:</strong> {booking.txnid}</p>
             <p><strong>Movie:</strong> {booking.movie}</p>

@@ -20,15 +20,19 @@ class Screen < ApplicationRecord
   private
 
   def generate_seats
+    return if seats.exists?
+
     return if total_seats.zero?
 
     rows = ("A".."Z").to_a
     seats_per_row = (total_seats.to_f / rows.size).ceil
     seats_created = 0
 
+    Screen.transaction do
     rows.each do |row_letter|
       (1..seats_per_row).each do |seat_num|
         break if seats_created >= total_seats
+
         seats.create!(
           row: row_letter,
           seat_number: seat_num.to_s,
@@ -38,6 +42,7 @@ class Screen < ApplicationRecord
         seats_created += 1
       end
       break if seats_created >= total_seats
+    end
     end
   end
   end

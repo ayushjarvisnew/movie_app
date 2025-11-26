@@ -4,15 +4,6 @@ Rails.application.routes.draw do
   post '/login', to: 'auth#login'
   get '/current_user', to: 'auth#current_user'
 
-  # get    'axios/movies',     to: 'movies#index'
-  # get    'axios/movies/:id', to: 'movies#show'
-  # post   'axios/movies',     to: 'movies#create'
-  # patch  'axios/movies/:id', to: 'movies#update'
-  # delete 'axios/movies/:id', to: 'movies#destroy'
-  #
-  # get    'axios/upcoming_movies', to: 'movies#upcoming_movies'
-
-  # ---------- MOVIES (api) ----------
   get    'api/movies',         to: 'movies#index'
   get    'api/movies/:id',     to: 'movies#show'
   post   'api/movies',         to: 'movies#create'
@@ -56,14 +47,13 @@ Rails.application.routes.draw do
   root 'home#index'
   get '*path', to: 'home#index', constraints: ->(req) { !req.xhr? && req.format.html? }
 
-  # get '/axios/info', to: 'home#api_status'
-  # ---------- SYSTEM STATUS ----------
+
   get '/api/info', to: 'home#api_status'
 
   post "/payments/initiate", to: "payments#initiate"
   post "/payment-success", to: "payments#success"
   post "/payment-failure", to: "payments#failure"
-  # ✅ Add these routes
+
   post "/payments/success", to: "payments#success"
   get  "/payments/success", to: "payments#success"
 

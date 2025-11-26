@@ -1,6 +1,5 @@
-/* 🔹 Showtime Form Styles */
 .showtime-form-section {
-    background: #f9fcff;
+    background: rgba(255, 255, 255, 0.15);
     padding: 30px;
     border-radius: 14px;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
@@ -16,7 +15,7 @@
 
 .showtime-form-section h2 {
     text-align: center;
-    background: linear-gradient(90deg, #007bff, #6610f2);
+    background: #ffcc00;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-size: 26px;
@@ -24,7 +23,6 @@
     margin-bottom: 25px;
 }
 
-/* 🔹 Form Layout */
 .showtime-form {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -52,7 +50,6 @@
     background-color: #fff;
 }
 
-/* 🔹 Submit Button */
 .showtime-btn {
     grid-column: span 2;
     background: linear-gradient(90deg, #007bff, #6610f2);
@@ -70,7 +67,7 @@
     transform: scale(1.03);
     box-shadow: 0 4px 14px rgba(0, 123, 255, 0.3);
 }
-/* 🔹 Buttons Row */
+
 .showtime-buttons {
     grid-column: span 2;
     display: flex;
@@ -78,7 +75,6 @@
     gap: 15px;
 }
 
-/* 🔹 Submit Button */
 .showtime-btn {
     background: linear-gradient(90deg, #007bff, #6610f2);
     color: #fff;
@@ -96,7 +92,6 @@
     box-shadow: 0 4px 14px rgba(0, 123, 255, 0.3);
 }
 
-/* 🔹 Cancel Button */
 .cancel-btn {
     background: linear-gradient(90deg, #dc3545, #c82333);
     color: #fff;
@@ -114,7 +109,6 @@
     box-shadow: 0 4px 14px rgba(220, 53, 69, 0.3);
 }
 
-/* 🔹 Responsive Design */
 @media (max-width: 600px) {
     .showtime-form {
         grid-template-columns: 1fr;

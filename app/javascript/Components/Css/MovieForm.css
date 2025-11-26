@@ -16,7 +16,7 @@
     text-align: center;
     font-size: 28px;
     font-weight: 700;
-    background: linear-gradient(45deg, #007bff, #8a2be2);
+    background: #ffcc00;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 30px;
@@ -89,7 +89,7 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    background: rgba(0, 123, 255, 0.08);
+    background: rgba(255, 255, 255, 0.8);
     padding: 5px 10px;
     border-radius: 8px;
     font-size: 14px;
@@ -148,7 +148,7 @@
     transform: scale(1.02);
     box-shadow: 0 4px 14px rgba(0, 123, 255, 0.3);
 }
-/* 🎬 Form Button Container (Submit + Cancel side by side) */
+
 .movie-form-buttons {
     display: flex;
     justify-content: space-between;
@@ -156,7 +156,6 @@
     grid-column: span 2;
 }
 
-/* 🎬 Shared button base style (same size, font, padding) */
 .movie-submit-btn,
 .movie-cancel-btn {
     flex: 1;
@@ -170,25 +169,21 @@
     transition: all 0.25s ease;
 }
 
-/* ✅ Submit / Update Movie button (already styled) */
 .movie-submit-btn {
     background: linear-gradient(90deg, #007bff, #6610f2);
     color: white;
 }
 
-/* ❌ Cancel Edit button */
 .movie-cancel-btn {
     background: linear-gradient(90deg, #dc3545, #ff5c5c);
     color: white;
 }
 
-/* Hover effects */
 .movie-submit-btn:hover,
 .movie-cancel-btn:hover {
     transform: scale(1.02);
 }
 
-/* 🎯 Specific hover shadows */
 .movie-submit-btn:hover {
     box-shadow: 0 4px 14px rgba(0, 123, 255, 0.3);
 }

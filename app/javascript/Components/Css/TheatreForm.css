@@ -20,7 +20,7 @@
     font-size: 28px;
     font-weight: 700;
     margin-bottom: 25px;
-    background: linear-gradient(90deg, #007bff, #8a2be2);
+    background: #ffcc00;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -69,7 +69,6 @@
     transform: scale(1.02);
     box-shadow: 0 4px 14px rgba(0, 123, 255, 0.3);
 }
-/* Cancel Button — matches .theatre-btn styling */
 .cancel-theatre-btn {
     background: linear-gradient(90deg, #ff4d4f, #d9363e);
     color: white;

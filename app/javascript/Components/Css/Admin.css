@@ -1,21 +1,20 @@
 .admin-container {
-    max-width: 1100px;
-    margin: 0 auto;
+    width: 90%;
+    max-width: 1200px;
+    margin: 40px auto;
+    background: #0d0d0d; /* Your dark background */
     padding: 30px;
-    font-family: "Poppins", sans-serif;
-    color: #1e293b;
-    background: #f9fafb;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
-
 .admin-title {
     text-align: center;
-    font-size: 2rem;
-    font-weight: 600;
-    color: #1f3c88;
+    font-size: 32px;
+    font-weight: 700;
     margin-bottom: 35px;
+    color: #ffcc00;
+    letter-spacing: 1px;
 }
-
-
 .admin-tabs {
     display: flex;
     justify-content: center;
@@ -25,122 +24,112 @@
 }
 
 .admin-tabs button {
-    background-color: #e0e7ff;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 18px;
+    background: #1c1f26;
+    border: 1px solid white;
+    color: #e0e0e0;
+    border-radius: 10px;
+    padding: 10px 20px;
     font-size: 15px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: 0.3s;
 }
 
 .admin-tabs button:hover {
-    background-color: #c7d2fe;
+    /*background: #272b34;*/
+    background: #ff8a00;
 }
 
 .admin-tabs .active {
-    background-color: #1f3c88;
-    color: #ffffff;
+    background: #ffcc00;
+    border: 1px solid white;
+    color: #000;
+    font-weight: 600;
 }
-
-.admin-section {
-    margin-top: 20px;
-}
-
 .admin-section h2 {
     text-align: center;
-    font-size: 1.6rem;
-    color: #1f3c88;
+    font-size: 1.8rem;
     font-weight: 600;
-    margin-bottom: 20px;
+    margin: 30px 0 15px;
+    color: #ffcc00;
 }
-
 .cards-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 22px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
 }
-
-
 .admin-card {
-    background: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
-    padding: 18px;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-    border: 1px solid #e5e7eb;
+    background: rgba(28, 28, 28, 0.85);
+    border-radius: 14px;
+    padding: 20px;
+    border: 1px solid white;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(6px);
+    transition: 0.25s ease;
 }
 
 .admin-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.65);
 }
-
 .admin-card h3 {
-    color: #1f3c88;
-    font-size: 1.15rem;
+    color: #ffcc00;
+    font-size: 1.1rem;
     font-weight: 600;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
-
 .admin-card p {
-    margin: 4px 0;
+    margin: 5px 0;
     font-size: 0.95rem;
-    color: #374151;
+    color: #cfd1d4;
 }
-
-
 .admin-card-buttons {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 14px;
+    gap: 10px;
+    margin-top: 16px;
 }
 
 .admin-card-buttons button {
-    padding: 6px 12px;
+    padding: 8px 14px;
     border: none;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    color: white;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.25s ease, transform 0.15s ease;
-}
-
-.admin-card-buttons button:hover {
-    transform: scale(1.05);
+    transition: 0.25s;
 }
 
 .btn-green {
-    background-color: #16a34a;
+    background: #16a34a;
+    color: #fff;
 }
 .btn-green:hover {
-    background-color: #15803d;
+    background: #0f7a36;
 }
 
 .btn-orange {
-    background-color: #f97316;
+    background: #ffa726;
+    color: #000;
 }
 .btn-orange:hover {
-    background-color: #ea580c;
+    background: #fb8c00;
 }
 
 .btn-red {
-    background-color: #ef4444;
+    background: #ef5350;
+    color: #fff;
 }
 .btn-red:hover {
-    background-color: #dc2626;
+    background: #d32f2f;
 }
-
 .empty-text {
     text-align: center;
-    color: #6b7280;
     font-style: italic;
-    margin-top: 10px;
+    color: #8b8b8b;
+    margin: 10px 0 25px;
 }
-
 @media (max-width: 768px) {
     .admin-container {
         padding: 20px;
@@ -152,22 +141,6 @@
     }
 
     .admin-card {
-        padding: 14px;
+        padding: 16px;
     }
-}
-.section-title {
-    text-align: center;
-    font-size: 1.6rem;
-    margin: 30px 0 15px;
-    color: #007bff;
-    font-weight: 600;
-    border-bottom: 2px solid #007bff33;
-    padding-bottom: 6px;
-}
-
-.empty-text {
-    text-align: center;
-    font-style: italic;
-    color: #777;
-    margin: 10px 0 25px;
 }

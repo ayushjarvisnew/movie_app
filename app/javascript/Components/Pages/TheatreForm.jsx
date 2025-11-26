@@ -49,11 +49,7 @@ const TheatreForm = ({ theatre = null, onSuccess,onCancel }) => {
             <h2 className="theatre-form-title">
                 {theatre ? "Edit Theatre" : "Add New Theatre"}
             </h2>
-            <form className="theatre-form-container" onSubmit={handleSubmit}>
-                <h2 className="theatre-form-title">
-                    {theatre ? "Edit Theatre" : "Create Theatre"}
-                </h2>
-
+            <form  onSubmit={handleSubmit}>
                 <div className="theatre-form">
                     <input
                         type="text"

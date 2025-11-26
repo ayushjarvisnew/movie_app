@@ -14,11 +14,10 @@ class ReservationsController < ApplicationController
     return render json: { error: "Showtime not found" }, status: :not_found unless showtime
     return render json: { error: "Select at least one seat" }, status: :unprocessable_entity if seat_ids.empty?
 
-    # ⛔ LIMIT ADDED HERE — A user can book only 5 tickets per booking
+
     if seat_ids.length > 5
       return render json: { error: "You can book only 5 seats at a time" }, status: :forbidden
     end
-    # ⛔ END LIMIT
 
     showtime_seats = ShowtimeSeat.where(showtime_id: showtime.id, seat_id: seat_ids, available: true)
     if showtime_seats.size != seat_ids.size
@@ -29,9 +28,9 @@ class ReservationsController < ApplicationController
     total_amount = seats.sum { |s| s.price.to_f }
 
     ActiveRecord::Base.transaction do
-      showtime_seats.lock! # prevent double booking
+      showtime_seats.lock!
 
-      txnid = "TXN#{SecureRandom.hex(8)}" # ✅ generate a unique transaction ID
+      txnid = "TXN#{SecureRandom.hex(8)}"
 
       reservation = @current_user.reservations.create!(
         showtime: showtime,
@@ -67,28 +66,28 @@ class ReservationsController < ApplicationController
   end
 
   def destroy
-    # 1️⃣ If reservation does not have a showtime
+
     if @reservation.showtime.nil?
       @reservation.destroy
       return render json: { message: "Reservation soft-deleted (showtime missing)" }
     end
 
-    # 2️⃣ Past showtime cannot be cancelled
+
     if @reservation.showtime.start_time < Time.current
       return render json: { error: "Cannot cancel past reservations" }, status: :forbidden
     end
 
-    # 3️⃣ Already cancelled?
+
     if @reservation.deleted_at.present?
       return render json: { error: "Reservation already cancelled" }, status: :unprocessable_entity
     end
 
-    # 4️⃣ Payment must be successful to allow cancel
+
     if @reservation.payment_status != "success"
       return render json: { error: "Cannot cancel unpaid reservation" }, status: :unprocessable_entity
     end
 
-    # 5️⃣ Perform cancellation + restore seat availability
+
     ActiveRecord::Base.transaction do
       ShowtimeSeat.where(
         showtime_id: @reservation.showtime_id,
@@ -97,7 +96,7 @@ class ReservationsController < ApplicationController
 
       @reservation.showtime.update_available_seats!
 
-      @reservation.destroy  # soft delete
+      @reservation.destroy
     end
 
     render json: { message: "Reservation cancelled successfully" }
@@ -137,7 +136,6 @@ class ReservationsController < ApplicationController
     showtime = reservation.showtime
     screen = showtime&.screen
     theatre = screen&.theatre
-
     data = {
       id: reservation.id,
       movie_title: showtime&.movie&.title || "N/A",

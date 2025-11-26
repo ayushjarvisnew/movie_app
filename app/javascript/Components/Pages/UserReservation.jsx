@@ -40,7 +40,7 @@ const UserReservation = ({ movieId }) => {
             console.error(err);
             alert("Failed to load showtimes.");
         } finally {
-            setLoading(false); // ⭐ NEW
+            setLoading(false);
         }
     };
 
@@ -124,8 +124,8 @@ const UserReservation = ({ movieId }) => {
                                 }}
                                 onClick={() => handleShowtimeClick(st)}
                             >
-                                <p>Screen: {st.screen?.name || "Unknown Screen"}</p>
-                                <p>
+                                <p style={{ color: "black" }} >Screen: {st.screen?.name || "Unknown Screen"}</p>
+                                <p style={{ color: "black" }}>
                                     {formatDay(st.start_time)} @ {formatTime(st.start_time)}
                                 </p>
                             </div>

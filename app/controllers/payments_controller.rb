@@ -124,6 +124,7 @@ class PaymentsController < ApplicationController
     end
   end
 
+
   def failure
     txnid = params[:txnid]
     reservation = Reservation.find_by(txnid: txnid)

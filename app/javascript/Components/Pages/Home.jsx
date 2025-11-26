@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../Css/Home.css";
+import { FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
 
 const bannerImages = [
     "/images/banner1.jpg",
@@ -18,7 +19,6 @@ const Home = () => {
     const [bannerIndex, setBannerIndex] = useState(0);
     const [testimonialIndex, setTestimonialIndex] = useState(0);
 
-    // Auto slide banners every 4 seconds
     useEffect(() => {
         const bannerInterval = setInterval(() => {
             setBannerIndex((prev) =>
@@ -28,7 +28,6 @@ const Home = () => {
         return () => clearInterval(bannerInterval);
     }, []);
 
-    // Auto slide testimonials every 5 seconds
     useEffect(() => {
         const testimonialInterval = setInterval(() => {
             setTestimonialIndex((prev) =>
@@ -50,6 +49,7 @@ const Home = () => {
                     >
                         <img src={img} alt={`Banner ${index}`} />
                     </div>
+
                 ))}
 
                 <button
@@ -83,67 +83,151 @@ const Home = () => {
                     ))}
                 </div>
             </div>
-
-            <div className="home-content">
-                <h1>Welcome to Movie Reservation System</h1>
-                <p>Browse movies, book seats, and manage your reservations easily.</p>
-                <Link to="/movies" className="button-link">
+            {/* ⭐⭐⭐ NEW GLASSMORPHISM HERO SECTION ⭐⭐⭐ */}
+            <div className="hero-glass">
+                <h1>Experience Movies Like Never Before</h1>
+                <p>Fast booking • Real-time seat selection • Smooth payments</p>
+                <Link to="/movies" className="hero-btn">
                     View Movies
                 </Link>
             </div>
 
             <section className="features">
                 <h2>🎬 Why Choose Us</h2>
-                <div className="feature-grid">
-                    <div>🎟️ <h3>Easy Online Booking</h3></div>
-                    <div>💺 <h3>Real-time Seat Selection</h3></div>
-                    <div>💸 <h3>Secure Payments</h3></div>
-                    <div>🍔 <h3>Food & Beverage Deals</h3></div>
+
+                <div className="feature-card-grid">
+
+                    <div className="feature-card">
+                        <span className="feature-icon">🎟️</span>
+                        <h3>Easy Online Booking</h3>
+                        <p>Book tickets in seconds with our smooth and simple UI.</p>
+                    </div>
+
+                    <div className="feature-card">
+                        <span className="feature-icon">💺</span>
+                        <h3>Real-time Seat Selection</h3>
+                        <p>Choose your seats live and get instant availability updates.</p>
+                    </div>
+
+                    <div className="feature-card">
+                        <span className="feature-icon">💸</span>
+                        <h3>Secure Payments</h3>
+                        <p>Multiple payment modes with encrypted transactions.</p>
+                    </div>
+
+                    <div className="feature-card">
+                        <span className="feature-icon">🍔</span>
+                        <h3>Food & Beverage Deals</h3>
+                        <p>Save more with special combo offers and snacks.</p>
+                    </div>
+
                 </div>
             </section>
 
-            <section className="how-it-works">
-                <h2>🧾 How It Works</h2>
-                <div className="steps">
-                    <div><span>1️⃣</span> Choose a Movie</div>
-                    <div><span>2️⃣</span> Select Show & Seats</div>
-                    <div><span>3️⃣</span> Pay Securely & Get E-Ticket</div>
-                </div>
-            </section>
 
-            <section className="testimonials">
-                <h2>💬 What Our Users Say</h2>
-                <div className="testimonial-box">
-                    <p>“{testimonials[testimonialIndex].text}”</p>
-                    <h4>— {testimonials[testimonialIndex].name}</h4>
+            <section className="testimonials-section">
+                <h2 className="title">💬 What Our Users Say</h2>
+
+                <div className="glass-card fade-in">
+                    <img
+                        className="avatar"
+                        src={`https://i.pravatar.cc/80?img=${testimonialIndex + 10}`}
+                        alt="User"
+                    />
+                    <p className="text">“{testimonials[testimonialIndex].text}”</p>
+                    <h4 className="name">— {testimonials[testimonialIndex].name}</h4>
                 </div>
-                <div className="testimonial-dots">
-                    {testimonials.map((_, index) => (
+
+                <div className="indicator">
+                    {testimonials.map((_, i) => (
                         <span
-                            key={index}
-                            className={
-                                index === testimonialIndex ? "dot active" : "dot"
-                            }
-                            onClick={() => setTestimonialIndex(index)}
+                            key={i}
+                            className={i === testimonialIndex ? "dot active" : "dot"}
+                            onClick={() => setTestimonialIndex(i)}
                         ></span>
                     ))}
                 </div>
             </section>
 
-            <section className="follow-us">
-                <h2>📱 Stay Connected</h2>
-                <div className="social-links">
-                    <a href="https://www.instagram.com/accounts/login/?next=%2Fbookmyshowin%2F&source=omni_redirect"><i className="fab fa-instagram"></i> Instagram</a>
-                    <a href="https://x.com/BookMyShow/"><i className="fab fa-twitter"></i> X (Twitter)</a>
-                    <a href="https://www.youtube.com/user/BookMyShow/featured"><i className="fab fa-youtube"></i> YouTube</a>
+            <section className="how-it-works">
+                <h2>🧾 How It Works</h2>
+
+                <div className="how-cards">
+
+                    <div className="how-card">
+                        <span className="how-icon">🎬</span>
+                        <h3>Choose a Movie</h3>
+                        <p>Browse all the latest movies available in your city.</p>
+                    </div>
+
+                    <div className="how-card">
+                        <span className="how-icon">🕒</span>
+                        <h3>Select Show</h3>
+                        <p>Pick your preferred date and showtime.</p>
+                    </div>
+
+                    <div className="how-card">
+                        <span className="how-icon">💺</span>
+                        <h3>Pick Your Seats</h3>
+                        <p>Select available seats in real-time with instant updates.</p>
+                    </div>
+
+                    <div className="how-card">
+                        <span className="how-icon">💳</span>
+                        <h3>Pay Securely</h3>
+                        <p>Make safe payments using your preferred method.</p>
+                    </div>
+
+                    <div className="how-card">
+                        <span className="how-icon">📄</span>
+                        <h3>Download E-Ticket</h3>
+                        <p>Instantly access your ticket and show it at the theatre.</p>
+                    </div>
+
                 </div>
             </section>
 
             <footer className="footer">
-                <div className="footer-links">
-                    <h4>About | Terms | Privacy | Contact</h4>
+                <div className="footer-container">
+                    {/* Centered logo with horizontal lines */}
+                    <div className="footer-logo-line">
+                        <span className="line"></span>
+                        <span className="logo-text">Movie Reservation</span>
+                        <span className="line"></span>
+                    </div>
+
+                    {/* Social links */}
+                    <div className="footer-social">
+                        <a
+                            href="https://www.instagram.com/accounts/login/?next=%2Fbookmyshowin%2F&source=omni_redirect"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="social-icon instagram"
+                        >
+                            <FaInstagram />
+                        </a>
+                        <a
+                            href="https://x.com/BookMyShow/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="social-icon twitter"
+                        >
+                            <FaTwitter />
+                        </a>
+                        <a
+                            href="https://www.youtube.com/user/BookMyShow/featured"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="social-icon youtube"
+                        >
+                            <FaYoutube />
+                        </a>
+                    </div>
+
+                    {/* Copyright */}
+                    <p className="footer-copy">© 2025 MovieReservationSystem. All rights reserved. Designed and developed with ❤️ by Ayush Gupta.
+                    </p>
                 </div>
-                <p>© 2025 MovieReservationSystem</p>
             </footer>
         </div>
     );

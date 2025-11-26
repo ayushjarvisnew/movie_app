@@ -4,6 +4,8 @@ import UserReservation from "./UserReservation";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "../Css/CustomSlick.css";
+import "../Css/Movie.css";
+import { FaStar } from "react-icons/fa";
 
 const Movies = () => {
     const [movies, setMovies] = useState([]);
@@ -14,30 +16,20 @@ const Movies = () => {
     useEffect(() => {
         const token = localStorage.getItem("token");
 
-
         axios
-            .get("/api/movies", {
-                headers: { Authorization: `Bearer ${token}` },
-            })
+            .get("/api/movies", { headers: { Authorization: `Bearer ${token}` } })
             .then((res) => {
                 if (Array.isArray(res.data)) {
-
                     const today = new Date();
-                    const released = res.data.filter(
-                        (m) => new Date(m.release_date) <= today
-                    );
-                    setMovies(released);
+                    setMovies(res.data.filter((m) => new Date(m.release_date) <= today));
                 }
             })
             .catch((err) => console.error(err));
 
-
         axios
-            .get("/api/upcoming_movies", {
-                headers: { Authorization: `Bearer ${token}` },
-            })
+            .get("/api/upcoming_movies", { headers: { Authorization: `Bearer ${token}` } })
             .then((res) => Array.isArray(res.data) && setUpcomingMovies(res.data))
-            .catch((err) => console.error("Error loading upcoming movies:", err));
+            .catch((err) => console.error(err));
     }, []);
 
     const filteredMovies = movies.filter((movie) =>
@@ -55,219 +47,98 @@ const Movies = () => {
         autoplaySpeed: 3000,
         arrows: false,
         pauseOnHover: true,
-        responsive: [
-            {
-                breakpoint: 768,
-                settings: { slidesToShow: 1 },
-            },
-        ],
+        responsive: [{ breakpoint: 768, settings: { slidesToShow: 1 } }],
     };
 
+    const renderStars = (rating) => {
+        const fullStars = Math.floor(rating);
+        return (
+            <div className="stars">
+                {Array.from({ length: 5 }, (_, i) => (
+                    <FaStar key={i} color={i < fullStars ? "#FFD700" : "#555"} />
+                ))}
+            </div>
+        );
+    };
+
+    const renderMovieCard = (movie, isUpcoming = false) => (
+        <div key={movie.id} className="movie-card">
+            <img src={movie.poster_image || "/default-poster.png"} alt={movie.title} />
+            {!isUpcoming && (
+                <div className="overlay">
+                    <p>{movie.description?.slice(0, 100)}...</p>
+                    {renderStars(movie.rating)}
+                    <button onClick={() => setSelectedMovie(movie)}>Book Now</button>
+                </div>
+            )}
+            <div className="movie-info">
+                <h3>{movie.title}</h3>
+                <div className="tags">
+                    {movie.tags?.map((tag) => (
+                        <span key={tag.id} className="tag">{tag.name}</span>
+                    ))}
+                </div>
+                {isUpcoming && <button className="coming-soon" disabled>Coming Soon</button>}
+            </div>
+        </div>
+    );
+
     return (
-        <div style={{ textAlign: "center", padding: "20px" }}>
-            <h1>Movies</h1>
+        <div className="movies-container">
+            <h1>Movies 🎬</h1>
 
             <input
                 type="text"
                 placeholder="Search for a movie..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                style={{
-                    padding: "10px",
-                    marginBottom: "20px",
-                    width: "300px",
-                    borderRadius: "5px",
-                    border: "1px solid #ccc",
-                }}
+                className="search-input"
             />
 
-
-
-            <div style={{ marginTop: "40px" }}>
+            {/* Released Movies */}
+            <div className="section">
                 <h2>🎥 All Released Movies</h2>
                 {filteredMovies.length > 0 ? (
-                    <div style={{ width: "80%", margin: "auto" }}>
+                    <div className="carousel-container">
                         <Slider {...carouselSettings}>
-                            {filteredMovies.map((movie) => (
-                                <div
-                                    key={movie.id}
-                                    style={{
-                                        border: "1px solid #ccc",
-                                        borderRadius: "8px",
-                                        padding: "10px",
-                                        width: "220px",
-                                        margin: "auto",
-                                        boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
-                                        textAlign: "center",
-                                        backgroundColor: "#fff",
-                                    }}
-                                >
-                                    <img
-                                        src={movie.poster_image || "/default-poster.png"}
-                                        alt={movie.title}
-                                        style={{
-                                            width: "200px",
-                                            height: "250px",
-                                            objectFit: "cover",
-                                            borderRadius: "10px",
-                                            margin: "auto",
-                                        }}
-                                    />
-                                    <h3 style={{ marginTop: "10px" }}>{movie.title}</h3>
-                                    <p>
-                                        Tags:{" "}
-                                        {movie.tags?.length
-                                            ? movie.tags.map((t) => t.name).join(", ")
-                                            : "No tags"}
-                                    </p>
-                                    <p>Rating: {movie.rating}</p>
-                                    <p>Release: {movie.release_date}</p>
-                                    <button
-                                        style={{
-                                            padding: "8px 12px",
-                                            borderRadius: "6px",
-                                            backgroundColor: "#1E90FF",
-                                            color: "#fff",
-                                            border: "none",
-                                            cursor: "pointer",
-                                            marginTop: "10px",
-                                        }}
-                                        onClick={() => setSelectedMovie(movie)}
-                                    >
-                                        Book Ticket
-                                    </button>
-                                </div>
-                            ))}
+                            {filteredMovies.map((movie) => renderMovieCard(movie))}
                         </Slider>
                     </div>
-                ) : (
-                    <p>No movies available</p>
-                )}
+                ) : <p>No movies available</p>}
             </div>
 
+            {/* Top Rated Movies */}
             {topRatedMovies.length > 0 && (
-                <div style={{ marginTop: "30px" }}>
+                <div className="section">
                     <h2>⭐ Top Rated Movies</h2>
-                    <div style={{ width: "90%", margin: "auto" }}>
+                    <div className="carousel-container">
                         <Slider {...carouselSettings}>
-                            {topRatedMovies.map((movie) => (
-                                <div key={movie.id}>
-                                    <img
-                                        src={movie.poster_image || "/default-poster.png"}
-                                        alt={movie.title}
-                                        style={{
-                                            width: "200px",
-                                            height: "250px",
-                                            objectFit: "cover",
-                                            margin: "auto",
-                                            borderRadius: "10px",
-                                        }}
-                                    />
-                                    <h4 style={{ marginTop: "10px" }}>{movie.title}</h4>
-                                    <p>Rating: {movie.rating}</p>
-                                </div>
-                            ))}
+                            {topRatedMovies.map((movie) => renderMovieCard(movie))}
                         </Slider>
                     </div>
                 </div>
             )}
 
-            <div style={{ marginTop: "50px" }}>
-                <h2>🎬 Upcoming Movies</h2>
-                {upcomingMovies.length > 0 ? (
-                    <div style={{ width: "80%", margin: "auto" }}>
+            {/* Upcoming Movies */}
+            {upcomingMovies.length > 0 && (
+                <div className="section">
+                    <h2>🎬 Upcoming Movies</h2>
+                    <div className="carousel-container">
                         <Slider {...carouselSettings}>
-                            {upcomingMovies.map((movie) => (
-                                <div
-                                    key={movie.id}
-                                    style={{
-                                        border: "1px solid #ddd",
-                                        borderRadius: "8px",
-                                        padding: "2px",
-                                        textAlign: "center",
-                                        boxShadow: "0 3px 6px rgba(0,0,0,0.1)",
-                                        backgroundColor: "#fafafa",
-                                    }}
-                                >
-                                    <img
-                                        src={movie.poster_image || "/default-poster.png"}
-                                        alt={movie.title}
-                                        style={{
-                                            width: "220px",
-                                            height: "300px",
-                                            objectFit: "cover",
-                                            borderRadius: "10px",
-                                            margin: "auto",
-                                        }}
-                                    />
-                                    <h4 style={{ marginTop: "10px" }}>{movie.title}</h4>
-                                    <p style={{ color: "#666" }}>
-                                        Releasing on {movie.release_date}
-                                    </p>
-                                    <button
-                                        disabled
-                                        style={{
-                                            padding: "8px 12px",
-                                            borderRadius: "6px",
-                                            backgroundColor: "#888",
-                                            color: "#fff",
-                                            border: "none",
-                                            cursor: "not-allowed",
-                                            opacity: 0.8,
-                                        }}
-                                    >
-                                         Comming Soon
-                                    </button>
-                                </div>
-                            ))}
+                            {upcomingMovies.map((movie) => renderMovieCard(movie, true))}
                         </Slider>
                     </div>
-                ) : (
-                    <p>No upcoming movies</p>
-                )}
-            </div>
+                </div>
+            )}
 
-
+            {/* Reservation Modal */}
             {selectedMovie && (
-                <div
-                    style={{
-                        position: "fixed",
-                        top: 0,
-                        left: 0,
-                        width: "100%",
-                        height: "100%",
-                        backgroundColor: "rgba(0,0,0,0.5)",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        zIndex: 1000,
-                    }}
-                >
-                    <div
-                        style={{
-                            backgroundColor: "#fff",
-                            padding: "20px",
-                            borderRadius: "8px",
-                            width: "600px",
-                            maxHeight: "90vh",
-                            overflowY: "auto",
-                        }}
-                    >
+                <div className="modal-overlay">
+                    <div className="modal-content">
                         <h2>{selectedMovie.title}</h2>
                         <p>{selectedMovie.description}</p>
                         <UserReservation movieId={selectedMovie.id} />
-                        <button
-                            onClick={() => setSelectedMovie(null)}
-                            style={{
-                                marginTop: "10px",
-                                padding: "6px 12px",
-                                borderRadius: "5px",
-                                border: "1px solid #ccc",
-                                cursor: "pointer",
-                            }}
-                        >
-                            Close
-                        </button>
+                        <button onClick={() => setSelectedMovie(null)}>Close</button>
                     </div>
                 </div>
             )}
@@ -276,4 +147,3 @@ const Movies = () => {
 };
 
 export default Movies;
-

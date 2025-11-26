@@ -135,6 +135,18 @@ const SeatSelection = ({ showtime, onClose }) => {
                         </div>
                     ))}
                 </div>
+                <div className="seat-legend">
+                    <div>
+                        <span className="seat available"></span> Available
+                    </div>
+                    <div>
+                        <span className="seat selected"></span> Selected
+                    </div>
+                    <div>
+                        <span className="seat booked"></span> Booked
+                    </div>
+                </div>
+
 
                 {selectedSeats.length > 0 && (
                     <p className="seat-summary">
