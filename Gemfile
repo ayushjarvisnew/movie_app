@@ -72,7 +72,7 @@ end
 
 # Gemfile
 group :development, :test do
-  gem "dotenv-rails", "~> 2.8"
+  gem "dotenv-rails", "~> 3.2"
 end
 # for creating pdf docmt.
 gem 'prawn'
